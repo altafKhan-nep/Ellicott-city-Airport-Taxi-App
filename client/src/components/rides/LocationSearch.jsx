@@ -5,6 +5,9 @@ import { Spinner } from '../ui/Spinner.jsx';
 /* global setTimeout, clearTimeout */
 
 export default function LocationSearch({ label, icon, value, onSelect, placeholder }) {
+  // `icon` arrives as a component (icon={MapPin}). JSX treats a lowercase tag
+  // as a literal DOM element, so it has to be bound to a capitalised name.
+  const Icon = icon;
   const [query, setQuery] = useState(value?.address || '');
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
@@ -87,7 +90,7 @@ export default function LocationSearch({ label, icon, value, onSelect, placehold
       <div className="relative" ref={boxRef}>
         {icon && (
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-            <icon className="h-4 w-4" />
+            <Icon className="h-4 w-4" />
           </span>
         )}
         <input
@@ -106,7 +109,7 @@ export default function LocationSearch({ label, icon, value, onSelect, placehold
         )}
 
         {open && results.length > 0 && (
-          <ul className="absolute left-0 right-0 z-50 mt-2 max-h-72 overflow-y-auto rounded-2xl border border-slate-200 bg-white py-1 shadow-xl">
+          <ul className="absolute left-0 right-0 z-[1100] mt-2 max-h-72 overflow-y-auto rounded-2xl border border-slate-200 bg-white py-1 shadow-xl">
             {results.map((r, i) => (
               <li key={r.id}>
                 <button
@@ -122,7 +125,7 @@ export default function LocationSearch({ label, icon, value, onSelect, placehold
                 >
                   {icon && (
                     <span className="mt-0.5 shrink-0 text-slate-400">
-                      <icon className="h-4 w-4" />
+                      <Icon className="h-4 w-4" />
                     </span>
                   )}
                   <span className="leading-snug">{r.address}</span>
