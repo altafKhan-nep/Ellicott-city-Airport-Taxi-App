@@ -1,196 +1,106 @@
-# Ellicott City Airport Taxi App (RideTaxi)
+# Ellicott City Airport Taxi — Mobile App
 
-A full-stack ride-booking application (passenger, driver, admin) with real-time ride tracking, maps, payments, and an editorial design system (RED-led). Built with React (Vite) frontend, Express + Socket.io backend, MongoDB, and Leaflet/OpenStreetMap.
+The iOS/Android app for Ellicott City Airport Taxi, built with **Capacitor** — the existing React UI
+in a native shell — sharing **one backend and one database** with the web app.
 
----
+Book a ride on your phone and it appears in the web admin instantly, because both apps are clients
+of the same API reading the same MongoDB (`ellicottaxi`). There is no sync layer, and none is needed.
 
-## Table of contents
-
-- [Features](#features)
-- [Tech stack](#tech-stack)
-- [Design system (overview)](#design-system-overview)
-- [Project structure](#project-structure)
-- [Quick start (development)](#quick-start-development)
-- [Environment variables](#environment-variables)
-- [Running tests & linting](#running-tests--linting)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [Troubleshooting & gotchas](#troubleshooting--gotchas)
-- [License](#license)
-- [Contact / Credits](#contact--credits)
-
----
-
-## Features
-
-- Passenger booking flow with pickup & dropoff selection
-- Real-time driver location and ride tracking via Socket.io
-- Interactive maps using Leaflet + OpenStreetMap
-- Stripe Payment Intents + cash option
-- Authentication (local, OAuth2) + JWT
-- SMS/OTP sign-in (Twilio) with console fallback in dev
-- Admin dashboard for rides, drivers, users, and payments
-- Responsive UI with Tailwind CSS and a brand-first design system
-
----
-
-## Tech stack
-
-- Frontend: React 18 + Vite, React Router v6
-- Styling: Tailwind CSS
-- Maps: Leaflet + OpenStreetMap
-- Backend: Node.js, Express, Socket.io
-- Database: MongoDB + Mongoose (geospatial queries)
-- Payments: Stripe (Payment Intents)
-- Auth: Passport.js (local + OAuth2 + JWT)
-- Email: Nodemailer (SMTP, console fallback)
-- SMS/OTP: Twilio (console/dev fallback)
-- Security: Helmet, express-rate-limit
-
----
-
-## Design system (overview)
-
-This project uses a RED-led design system. Key points:
-
-- Design tokens live in `client/src/index.css` inside the Tailwind `@theme` block. Keep token names stable (`brand-*`, `accent-*`, `gold-*`, `ink`, `muted`, `paper`).
-- Red is the primary brand (nav/hero/footer/CTA). Gold is used as an accent on red surfaces. Blacks/grays are contrast only.
-- Pills everywhere: rounded-full inputs, buttons, chips.
-- Map-specific colors are exceptions: pickup green `#10b981`, dropoff red (brand-700), driver pulsing red (brand-600), idle vehicles white with black border.
-- Route polyline color is brand red `#c62828` (white casing) — implemented in `BookingMap.jsx` and `RideTracking.jsx`.
-- Use layered shadows for depth (`.card-lift`), avoid heavy borders.
-
----
-
-## Project structure
-
-Top-level layout (trimmed):
-
-ride-booking/
-├── client/                  # React frontend (Vite)
-│   ├── src/
-│   │   ├── components/      # Reusable UI (auth/, maps/, rides/, ui/, layout/, three/)
-│   │   ├── pages/           # Route pages (marketing/, passenger/, driver/, admin/)
-│   │   ├── data/            # shared services.js (nav + marketing)
-│   │   ├── hooks/           # useSocket, useGeolocation, useAuth
-│   │   ├── context/         # AuthContext
-│   │   └── services/        # api.js, authService.js, socketService.js, rideService.js, paymentService.js, etc.
-│   └── public/              # sw.js (web-push service worker)
-├── server/                  # Express backend
-│   ├── src/
-│   │   ├── controllers/
-│   │   ├── models/          # Mongoose schemas (including geospatial)
-│   │   ├── routes/
-│   │   ├── services/        # payments, notifications, email, twilio adapters, etc.
-│   │   └── sockets/         # socket.io event handlers
-├── .env.example
-└── README.md (this file)
-
----
-
-## Quick start (development)
-
-Prerequisites:
-- Node.js 18+ / npm
-- MongoDB (local or Atlas)
-- Optional: Stripe test keys, Twilio test credentials
-
-Install & run:
-
-```bash
-# Install dependencies
-cd client && npm install
-cd ../server && npm install
-
-# Environment setup
-cp .env.example .env   # Add MongoDB URI, JWT secrets, Stripe keys
-
-# Run dev servers (separate terminals)
-cd client && npm run dev    # http://localhost:5173
-cd server && npm run dev    # http://localhost:5001
+```
+  Web app (Vercel) ─┐
+                    ├─→  https://ridetaxi-api.onrender.com  ─→  MongoDB "ellicottaxi"
+  This app (native) ┘
 ```
 
-macOS gotcha: Port 5000 is frequently taken by system services (ControlCenter/AirPlay). Backend defaults to port 5001—if you change it, update `client/vite.config.js` proxy targets.
+> The backend lives in the **web** repo. This repository contains no server.
 
 ---
 
-## Environment variables
+## What's here
 
-Populate `.env` from `.env.example`. Typical keys used by the app:
+```
+client/          # the app — React UI (Vite), hosted by Capacitor
+  src/           # pages, components, services (api.js, socketService.js, …)
+  android/       # native Android project
+  ios/           # native iOS project
+  capacitor.config.json
+docs/            # architecture, deployment, product docs
+```
 
-- MONGODB_URI=your-mongo-uri
-- JWT_SECRET=your-jwt-secret
-- JWT_EXPIRES_IN=1d
-- STRIPE_SECRET_KEY=sk_test_...
-- STRIPE_PUBLISHABLE_KEY=pk_test_...
-- TWILIO_ACCOUNT_SID=...
-- TWILIO_AUTH_TOKEN=...
-- TWILIO_PHONE_NUMBER=...
-- SMTP_HOST=...
-- SMTP_PORT=...
-- SMTP_USER=...
-- SMTP_PASS=...
-- NODE_ENV=development
-- PORT=5001
+## Quick start
 
-Note: In development, email and SMS services fall back to console outputs if not configured.
+```bash
+cd client
+npm install
+cp .env.example .env      # then set VITE_API_URL (see below)
+npm run build             # REQUIRED before every cap sync
+npx cap sync android      # or: npx cap sync ios
+npx cap open android      # build/run from Android Studio
+```
 
----
+`cap sync` copies `client/dist/` into the native project, so **you must build first** — a stale
+build ships the previous version of the app.
 
-## Running tests & linting
+To iterate quickly in a browser, `npm run dev` (http://localhost:5173) serves the same UI with the
+Vite proxy. Leave `VITE_API_URL` empty for that to use a local backend.
 
-- Frontend: `cd client && npm run test` (if tests present)
-- Backend: `cd server && npm run test`
-- Linting: `npm run lint` in each workspace (if configured)
+## Configuration
 
-(If the repo has no test scripts configured yet, consider adding Jest/React Testing Library for the client and Jest/Supertest for API tests.)
+| Variable | Purpose |
+|---|---|
+| `VITE_API_URL` | Backend origin for **both** REST and Socket.io. Set to `https://ridetaxi-api.onrender.com` to share the live data. Leave empty to use the local Vite proxy. |
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key. Blank = the server's sandbox card simulator. |
+| `VITE_GOOGLE_CLIENT_ID` / `VITE_FACEBOOK_APP_ID` | Enables the social login buttons. |
 
----
+`.env` is gitignored. The API URL is **baked in at build time** — a release build made with
+`VITE_API_URL` empty will point at localhost and silently fail on a device.
 
-## Deployment
+## Tech
 
-- Recommended: Host frontend (Vite) on Netlify / Vercel, backend on Heroku / Render / Railway, MongoDB on Atlas.
-- Set environment variables in the hosting platform.
-- Configure CORS and allowed origins, ensure Socket.io transport works behind any proxy.
-- In production, set NODE_ENV=production and ensure HTTPS endpoints for Stripe & OAuth callbacks.
+| Layer | Choice |
+|---|---|
+| UI | React 18 + Vite + React Router v6, Tailwind CSS v4 |
+| Shell | Capacitor 7 (Android + iOS) |
+| Maps | Leaflet + OpenStreetMap |
+| Realtime | Socket.io (`ride:update`, `driver:location`, `notification:new`, …) |
+| Backend | The web repo's Express + Socket.io API (not in this repo) |
+| Database | MongoDB `ellicottaxi` (shared with the web app) |
 
----
+## Two things that silently break the app
 
-## Contributing
+1. **Socket auth.** The server accepts only a JWT on the socket handshake
+   (`socket.handshake.auth.token`) and has no `userId`/`role` fallback, because a client-asserted
+   role can be forged. `socketService.js` must send `{ token }`. Sending the old `{ userId, role }`
+   connects as `user:anon` — the app looks alive but has **no driver location, no ride updates, no
+   notifications**.
+2. **CORS.** The WebView sends `capacitor://localhost` (iOS) or `https://localhost` (Android), not
+   the web origin. These are allowed natively by the backend's `corsOrigins()`. If the app cannot
+   reach the API, verify the backend's CORS allowlist has been deployed.
 
-- Fork the repo and open a branch for your feature/fix: `git checkout -b feat/your-feature`
-- Keep commit messages clear and atomic.
-- Submit PRs against the default branch with a description of the change and testing steps.
-- Follow the existing design tokens — change color values only, not token names.
+## Known limitations (v1)
 
----
+- **No background location** — a driver broadcasts position only while the app is open.
+- **No push notifications** — web push needs a service worker, which a WebView does not reliably
+  provide. The Profile screen detects this and shows its fallback.
+- **Leaflet CSS loads from a CDN** — works online, breaks offline.
+- **Store assets are placeholders** — the default Capacitor icon and splash screen.
+- **Admin CRM is cramped on a phone** — it works, but it is a desktop tool.
 
-## Troubleshooting & tips
+## Build requirements
 
-- Map tiles not loading? Check network and Leaflet/OpenStreetMap usage limits. Make sure client can reach tile endpoints.
-- Socket.io issues behind proxies: allow `websocket` and `polling` transports and ensure server proxy forwards upgrade headers.
-- Geospatial queries: ensure 2dsphere index is present on location fields in MongoDB.
-- Payment issues: use Stripe test cards and review webhook signing secret if using webhooks.
+- **Android:** Android Studio + Android SDK (SDK 35). Gradle 8.11.1 / AGP 8.7.2, JDK 17+.
+- **iOS:** full Xcode (not just the Command Line Tools) + CocoaPods, then `pod install` in `ios/App`.
 
----
+## Documentation
+
+- [`docs/MOBILE_APP_PLAN.md`](docs/MOBILE_APP_PLAN.md) — architecture, why Capacitor, and the
+  pre-store checklist
+- [`AGENTS.md`](AGENTS.md) — full developer guide (design system, routes, data models, API contract)
 
 ## Acknowledgements
 
-- Leaflet / OpenStreetMap
-- Stripe
-- Passport.js
-- Tailwind CSS
-
----
-
-## License
-
-MIT License — see LICENSE file for details.
-
----
+Leaflet / OpenStreetMap · Stripe · Passport.js · Tailwind CSS · Capacitor
 
 ## Contact
 
-Maintainer: altafKhan-nep
-
-For questions, issues, or feature requests, please open an issue on the repository.
+Maintainer: `altafKhan-nep` — (410) 365-5556 · chriskbonsu@gmail.com

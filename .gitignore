@@ -1,0 +1,18 @@
+node_modules
+dist
+.env
+*.log
+.DS_Store
+
+# Capacitor native builds
+android/app/build
+android/build
+android/.gradle
+android/local.properties
+android/app/src/main/assets/public
+ios/App/Pods
+ios/App/build
+ios/App/App/public
+ios/App/App/config.xml
+*.xcuserdatad
+DerivedData/

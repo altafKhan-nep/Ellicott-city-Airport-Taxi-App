@@ -19,7 +19,16 @@ export default function LocationSearch({ label, icon, value, onSelect, placehold
 
   // Debounced autocomplete
   useEffect(() => {
-    if (query.trim().length < 2) {
+    const q = query.trim();
+    if (q.length < 2) {
+      setResults([]);
+      setOpen(false);
+      return;
+    }
+    // Picking a suggestion fills the input with the full address, which would
+    // otherwise re-trigger the search and pop the list back open on top of the
+    // next field. Only search when the text differs from the chosen address.
+    if (value?.address && q === value.address.trim()) {
       setResults([]);
       setOpen(false);
       return;
@@ -39,7 +48,7 @@ export default function LocationSearch({ label, icon, value, onSelect, placehold
       }
     }, 350);
     return () => clearTimeout(t);
-  }, [query]);
+  }, [query, value?.address]);
 
   // Close on outside click
   useEffect(() => {

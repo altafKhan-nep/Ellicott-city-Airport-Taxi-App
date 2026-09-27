@@ -1,148 +1,165 @@
-# RideTaxi Mobile App Plan
+# Ellicott City Airport Taxi — Mobile App
 
-Goal: convert the existing RideTaxi web app (`client/` + `server/`) into a modern, smooth,
-fully responsive native app for **iOS and Android**, replicating the web design and the
-Uber-style ride experience. The backend (`server/`) is already a clean REST + Socket.io API
-and is **reused with almost zero changes**.
+The mobile app is the **web client wrapped in a native shell with Capacitor**. The React UI in
+`client/` is the app; `android/` and `ios/` are thin native containers that host it and add
+store packaging, permissions and platform conventions.
 
-Status of this doc: **Phase 0 (audit) complete** — see
-[`docs/mobile/PHASE0_AUDIT.md`](mobile/PHASE0_AUDIT.md) for the screen-by-screen mapping.
-
----
-
-## 1. Approach decision
-
-| Option | Reuse existing code | Native feel | Maps / Push / Background location | Effort | Fit |
-|---|---|---|---|---|---|
-| **React Native + Expo (chosen)** | API layer + business logic (~70%); UI ported to RN | Native, Uber-like | `react-native-maps` (Apple/Google), `expo-notifications`, `expo-task-manager` background location | 6–10 weeks | Best long-term; right for the driver app |
-| Capacitor (web-wrap) | ~100% (SPA in WebView) | WebView feel | Leaflet OK; background location + native push need plugins | 1–3 weeks | Fastest listing, not truly native |
-| PWA only | ~100% | Good in browser | No reliable background location | Days | Weak for a driver app |
-| Flutter | ~0% (full rewrite) | Native | Excellent | 12+ weeks | Only if team is Dart-first |
-
-**Decision: React Native + Expo.** It is a UI port, not a rewrite. All auth, rides, payments,
-notifications, socket and admin logic in `server/` stays untouched.
+> **Superseded:** this file previously specified a React Native + Expo rewrite. That approach was
+> **rejected and never implemented** — the repo contained no `mobile/` directory, only an older
+> copy of the web client. See "Why Capacitor" below.
 
 ---
 
-## 2. Architecture
+## 1. Why Capacitor, and not React Native
+
+The requirement was to keep the **existing mobile UI exactly as it was built**. That rules out a
+React Native rewrite: every screen would have to be re-created in RN, forcing Leaflet →
+`react-native-maps`, dropping the 3D hero, and re-deriving the entire design system. The result
+would be *similar* to the current UI, not the same UI.
+
+| Approach | UI reused | Time to store | Verdict |
+|---|---|---|---|
+| **Capacitor (chosen)** | 100% — same React bundle | 1–2 weeks | Same UI by construction |
+| React Native / Expo | ~0% — full rewrite | 6–10 weeks | Rejected: UI would change |
+| PWA only | 100% | days | No store listing; kept as a fallback |
+
+**The trade-off, stated plainly:** a WebView app cannot do true background location. A driver app
+ideally broadcasts position with the screen off. In v1 the driver broadcasts only while the app is
+open. If that proves unacceptable, the fix is a background-location plugin (or porting *only* the
+driver screen to RN) — not a rewrite of the whole app.
+
+---
+
+## 2. How the two apps share data
+
+**There is no sync code, and that is the point.** Both apps are clients of one API, and that API
+reads one MongoDB (`ellicottaxi`). A ride booked on the phone is in the web admin immediately,
+because there is only ever one copy of the data.
 
 ```
-ride-app/
-├── server/                    # UNCHANGED — host on HTTPS + widen CORS
-├── client/                    # Web app (kept as-is)
-├── docs/
-│   ├── MOBILE_APP_PLAN.md     # this doc
-│   └── mobile/
-│       └── PHASE0_AUDIT.md    # screen/backend/data audit (Phase 0 deliverable)
-└── mobile/                    # NEW Expo app (sibling of client/)
-    ├── app/                   # expo-router file-based routes (mirror web pages/)
-    │   ├── (tabs)/            # Passenger bottom tabs: Home, Book, Rides, Profile
-    │   ├── driver/            # Driver dashboard + earnings
-    │   ├── admin/             # Admin (v2, or web-only)
-    │   ├── auth/              # Login, Register, Forgot/Reset, OTP
-    │   └── ride/              # Track, History, Payment
-    ├── src/
-    │   ├── theme/             # NativeWind config — port index.css tokens verbatim
-    │   ├── api/               # PORT client/src/services/* (axios + socket.io-client)
-    │   ├── data/              # COPY of client/src/data (services, vehicles) — icons swapped
-    │   ├── components/        # RN equivalents of web components
-    │   └── hooks/             # useSocket, useAuth, useGeolocation ports
-    └── app.config.js          # EAS Build + env config
+  client/ (web, Vercel)  ─┐
+                          ├─→  https://ridetaxi-api.onrender.com  ─→  MongoDB "ellicottaxi"
+  client/ (Capacitor app) ┘
 ```
 
-Porting decisions:
+The repository's own `server/` was **deleted** (recoverable at commit `fc0b284`). A second backend
+writing to the same database is a split-brain waiting to happen, and the copy had already drifted
+6 weeks behind the real one.
 
-- **Router:** expo-router (file-based; closest to react-router v6).
-- **Styling:** NativeWind v4 — reuse Tailwind class names; copy `brand-*` / `accent-*` /
-  `gold-*` tokens from `client/src/index.css` into the NativeWind theme (tokens, not new
-  values — "change values in the theme, never in components" applies here too).
-- **Icons:** swap `lucide-react` for `@expo/vector-icons` (Ionicons) with a 1:1 mapping
-  (see data reuse below).
-- **3D hero taxi (`three.js`):** drop for v1; replace with a static branded hero image.
-  Port `prefers-reduced-motion` handling to `AccessibilityInfo.isReduceMotionEnabled()`.
-- **Maps:** replace Leaflet with `react-native-maps`; decode OSRM polylines with
-  `@mapbox/polyline`; recreate the pin set (`map-pin-start` green, `map-pin-dropoff`
-  brand-red, pulsing `map-pin-driver`) with animated RN markers.
+**The mobile client is configured by one variable** (`client/.env`):
 
----
+```
+VITE_API_URL=https://ridetaxi-api.onrender.com
+```
 
-## 3. Phases
+`client/src/services/api.js` uses it for **both** REST (`axios`) and Socket.io, so a device build
+reaches the shared backend with no code change. Leave it empty to develop against a local backend
+through the Vite proxy.
 
-### Phase 0 — Audit (done — see docs/mobile/PHASE0_AUDIT.md)
-Screen-by-screen mapping, backend reuse check, data reuse plan, scope decisions.
-
-### Phase 1 — Foundation
-1. `npx create-expo-app` (TypeScript + expo-router template) + NativeWind + Tailwind v4.
-2. Port all service files from `client/src/services/` (axios + socket.io-client are
-   isomorphic). Replace the Vite proxy (`client/vite.config.js`) with
-   `process.env.EXPO_PUBLIC_API_URL`.
-3. Swap `localStorage` token store (`api.js:25-56`) for `expo-secure-store`; keep the
-   queued-refresh + per-role token pattern intact.
-4. Copy `services.js` + `vehicles.js` into `mobile/src/data/` with icons replaced.
-
-### Phase 2 — Auth
-1. Login/Register/Forgot/Reset screens mirroring `Login.jsx` / `Register.jsx` (red
-   `btn-brand-gradient` CTAs, pill inputs).
-2. Google/Facebook login → `expo-auth-session` (ASWebAuthenticationSession / Custom Tabs);
-   same redirect flow, backend untouched.
-3. Re-enable phone OTP — backend endpoints already exist (`POST /api/auth/otp/send|verify`).
-4. Optional: biometric unlock via `expo-local-authentication`.
-
-### Phase 3 — Maps + Booking (the Uber core)
-1. `react-native-maps` (Apple Maps iOS, Google Maps Android) + `@mapbox/polyline` for OSRM
-   routes; two-layer polyline for the white-cased brand-red (#c62828) route.
-2. Port `Reservations.jsx` flow: `LocationSearch` → `GET /api/places/search`,
-   `GET /api/drivers/nearby`, `GET /api/drivers/:id/eta` + dashed route; bottom-sheet
-   booking card (`@gorhom/bottom-sheet`).
-3. Port `RideTracking.jsx` onto existing socket events (`ride:update`, `driver:location`,
-   `passenger:location`); keep ~2s position throttling.
-
-### Phase 4 — Driver app + background location
-1. `expo-location` + `expo-task-manager` for background location broadcast to the existing
-   `driver:location` socket flow (Android foreground-service permission required).
-2. Driver dashboard (`driver/Dashboard.jsx`) → RN feed consuming `ride:new` per-driver
-   `user:{id}` rooms; accept/start/complete actions.
-
-### Phase 5 — Payments
-1. `@stripe/stripe-react-native`: reuse the exact PaymentIntent flow
-   (`POST /rides/:id/payment-intent` → `clientSecret` → confirm). No backend changes.
-2. Cash + sandbox fallback already built in — free for dev/test builds.
-3. Preserve the `idempotencyKey` / sparse-unique double-charge protection.
-
-### Phase 6 — Push notifications
-1. Replace web-push with `expo-notifications` (APNs + FCM via Expo Push Service).
-2. Add `POST /api/notifications/expo-token` (register device token) and an Expo branch in
-   `notificationService.notify()`. Keep web-push for the web app.
-
-### Phase 7 — Performance + polish
-1. Reanimated v4 for the pulse/parallax/bob animations replacing GSAP.
-2. `expo-image` for cached avatars, `FlashList` for long lists, `react-native-svg` markers.
-3. Splash, app icon (red + gold), haptics, skeleton loaders, offline empty-states.
-
-### Phase 8 — Build + stores
-1. EAS Build → `.ipa` + `.aab`; TestFlight + Play Internal Testing.
-2. EAS Update for OTA patches.
-3. Store submission: privacy policy, permission strings, review sandbox account,
-   real `STRIPE_SECRET_KEY`, HTTPS API host.
+> **Never point two apps at the same database unless they should share it.** The `ridetaxi`
+> database on a dev machine belongs to a different project. The shared database here is
+> `ellicottaxi`.
 
 ---
 
-## 4. Best practices
+## 3. What had to change to make sharing work
 
-- **Design consistency:** reuse token values from `index.css`; never hardcode new hexes in
-  components (route #c62828 is the only allowed raw hex, matching the web).
-- **Auth security:** SecureStore-only tokens, HTTPS everywhere, refresh-queue pattern ported
-  verbatim (`api.js` already solves the race).
-- **Realtime discipline:** only targeted rooms (`ride:{id}`, `user:{id}`); throttle positions.
-- **Performance:** map-marker memoization, polyline decode off the JS thread, socket
-  debounce/batching.
-- **Reduced motion + accessibility** from day one.
+Sharing is mostly configuration, but two things genuinely blocked it.
+
+### 3.1 Socket authentication (client fix)
+
+The server accepts **only** a JWT on the socket handshake and deliberately has no `userId`/`role`
+fallback, because a client-asserted role can be forged:
+
+```js
+// server/src/config/socket.js — server
+const token = socket.handshake.auth?.token || ...;
+```
+
+The mobile client was still sending the old shape, so every connection was anonymous. Verified
+against a running server:
+
+| Handshake sent | Server's verdict |
+|---|---|
+| `{ userId, role: 'admin' }` (old) | `Socket connected: … user:anon role:-` |
+| `{ token }` (current) | `Socket connected: … user:6ab8c59… role:passenger` |
+
+An anonymous socket means **no driver location, no `ride:update`, no notifications** — the app
+would look alive while being functionally frozen. Fixed in two non-UI files:
+
+- `client/src/services/socketService.js` — `readAccessToken()` + `connectSocket(role)`
+- `client/src/context/AuthContext.jsx` — `connectSocket(user.role)`
+
+### 3.2 CORS allowlist (server fix)
+
+The WebView sends its own origin, not the web app's: `capacitor://localhost` on iOS,
+`https://localhost` on Android. A single-origin allowlist blocks both.
+
+`server/src/config/env.js` now exports `corsOrigins()`, and `CLIENT_ORIGIN` stays a **single**
+origin because it is also the base URL for verification links in outgoing email. Extra frontends
+go in the separate `CORS_ORIGINS` variable; the native origins are always admitted.
+
+**This change must be deployed to Render** or the app is CORS-blocked in release builds.
 
 ---
 
-## 5. Open questions for the team
+## 4. Layout
 
-1. Target: consumer app, driver app, admin app — all three, or passenger first?
-2. `mobile/` app versioning: same build or split passenger/driver apps?
-3. Do we need OTP re-enabled on web too, or mobile only?
-4. Monetization is outside scope (no in-app purchases needed for rides).
+```
+ellicot-app/
+├── client/                  # the app — React UI (unchanged from the web client)
+│   ├── src/                 # pages, components, services (api.js, socketService.js)
+│   ├── android/             # NEW — native Android project
+│   ├── ios/                 # NEW — native iOS project
+│   ├── capacitor.config.json
+│   └── .env                 # VITE_API_URL → shared API (gitignored)
+└── docs/
+```
+
+## 5. Workflow
+
+```bash
+cd client
+npm install
+npm run build          # REQUIRED before every sync — webDir is dist/
+npx cap sync android   # or: npx cap sync ios
+npx cap open android   # opens Android Studio
+```
+
+Rebuilding is not optional: Capacitor copies `dist/` into the native project, so a stale build
+silently ships the previous version of the app.
+
+## 6. Platform configuration that is already done
+
+| Concern | Where | Note |
+|---|---|---|
+| Location permission | `android/app/src/main/AndroidManifest.xml` | The app calls `navigator.geolocation` directly, so the permission must be **declared**; Capacitor's `WebChromeClient` turns the WebView prompt into the runtime request |
+| HTTPS only | `AndroidManifest.xml` → `usesCleartextTraffic="false"` | The API is HTTPS; no cleartext downgrade |
+| iOS usage strings | `ios/App/App/Info.plist` | Location/camera/photo strings — **iOS terminates the app** if these are missing |
+| 64-bit | `Info.plist` → `arm64` | Replaced the template's obsolete `armv7` |
+| WebView origin | `capacitor.config.json` → `androidScheme: "https"` | Makes the Android origin `https://localhost` |
+
+## 7. Known limitations (v1, all deliberate)
+
+1. **No background location.** A driver's position is broadcast only while the app is open. Needs
+   a foreground-service plugin and a Play Store justification.
+2. **No push notifications.** Web push needs a service worker, which a WebView does not reliably
+   provide. The Profile screen detects this and shows its fallback. Native push needs
+   `@capacitor/push-notifications` + an APNs/FCM setup.
+3. **Leaflet CSS loads from a CDN** (`unpkg`) with an SRI hash — fine online, broken offline.
+   Vendor it into `client/public/` before relying on the app without a connection.
+4. **Store assets are placeholders** — the default Capacitor icon and splash screen. Replace with
+   the brand's red/gold assets before submitting.
+5. **Admin CRM is cramped on a phone.** It works, but it is a desktop tool.
+
+## 8. Before store submission
+
+- [ ] Android SDK installed, then `npx cap open android` → build a debug APK
+- [ ] Xcode installed, `pod install` in `ios/App`, then build for a device
+- [ ] Deploy the CORS change to Render and confirm `access-control-allow-origin: capacitor://localhost`
+- [ ] Replace the app icon and splash screen
+- [ ] Set `VITE_STRIPE_PUBLISHABLE_KEY` and confirm the server has a live `STRIPE_SECRET_KEY`
+- [ ] Register OAuth redirect URIs for the native app scheme, or hide those buttons
+- [ ] Privacy policy covering location, camera and photo-library access
+- [ ] A real `VITE_API_URL` baked into the **release** build (see §5 — a debug build can silently
+      point at localhost)

@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
   }, [loadUser]);
 
   useEffect(() => {
-    if (user) connectSocket(user._id, user.role);
+    if (user) connectSocket(user.role);
     return () => disconnectSocket();
   }, [user]);
 

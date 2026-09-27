@@ -1,21 +1,66 @@
-# RideTaxi - Developer Guide
+# Ellicott City Airport Taxi — Mobile App (Developer Guide)
+
+> **This repo is the Capacitor mobile app, not a copy of the web app.** The React UI in `client/`
+> *is* the app; `android/` and `ios/` are native shells that host it. The backend was **deleted** —
+> this app shares one API and one database with the web app. See
+> [`docs/MOBILE_APP_PLAN.md`](docs/MOBILE_APP_PLAN.md) for the architecture and rationale.
+
+## Shared data with the web app
+
+Both apps are clients of the **same API**, which reads the **same MongoDB** (`ellicottaxi`). There
+is no sync code because there is only one copy of the data: a ride booked here appears in the web
+admin immediately.
+
+```
+client/ (web)   ─┐
+                 ├─→  one API  ─→  MongoDB "ellicottaxi"
+client/ (app)   ─┘
+```
+
+Configure the backend with **one variable** in `client/.env` (gitignored):
+
+```
+VITE_API_URL=https://ridetaxi-api.onrender.com
+```
+
+`client/src/services/api.js` uses it for **both** REST and Socket.io, so a device build reaches the
+shared backend with no code change. **Leave it empty to develop against a local backend** via the
+Vite proxy.
+
+> This repo's `server/` was removed (recoverable at `fc0b284`). Do not re-add it — a second backend
+> writing to the shared database is a split-brain, and the copy had drifted 6 weeks behind. The
+> backend lives in the web repo.
 
 ## Quick Start
 
 ```bash
-# Install dependencies
-cd client && npm install
-cd ../server && npm install
+cd client
+npm install
+cp .env.example .env        # set VITE_API_URL to the shared API
 
-# Environment setup
-cp .env.example .env  # Add MongoDB URI, JWT secrets
+# Browser dev (uses the Vite proxy to a local backend when VITE_API_URL is empty)
+npm run dev                 # http://localhost:5173
 
-# Run dev servers (separate terminals)
-cd client && npm run dev    # http://localhost:5173
-cd server && npm run dev    # http://localhost:5001
+# Native app — the build is REQUIRED before every sync, because Capacitor
+# copies dist/ into the native project. A stale build ships the old app.
+npm run build
+npx cap sync android        # or: npx cap sync ios
+npx cap open android        # Android Studio
 ```
 
-> **macOS gotcha**: Port `5000` is often taken by ControlCenter/AirPlay. The backend defaults to **5001**. If you change it, also update `client/vite.config.js` proxy targets.
+> **macOS gotcha**: Port `5000` is often taken by ControlCenter/AirPlay. A local backend defaults to
+> **5001**, which is what `client/vite.config.js` proxies to.
+
+## Two things that silently break the app
+
+1. **Socket auth.** The server accepts *only* a JWT (`socket.handshake.auth.token`) and has no
+   `userId`/`role` fallback — a client-asserted role can be forged. `socketService.js` must send
+   `{ token }`. Sending the old `{ userId, role }` yields `user:anon`: the app looks alive but has
+   **no driver location, no `ride:update`, no notifications**.
+2. **CORS.** The WebView sends `capacitor://localhost` (iOS) or `https://localhost` (Android), not
+   the web origin. The backend allows those natively via `corsOrigins()`. If the app cannot reach
+   the API, check that the **CORS allowlist change has been deployed** to the backend.
+
 
 ## Design System (professional red + black + gold — user-chosen, RED-led)
 
@@ -58,8 +103,8 @@ Usage rules:
 ## Project Structure
 
 ```
-ride-booking/
-├── client/                  # React frontend (Vite)
+ellicot-app/
+├── client/                  # the app — React UI (Vite), hosted by Capacitor
 │   ├── src/
 │   │   ├── components/      # Reusable UI (auth/, maps/, rides/, ui/, layout/, three/)
 │   │   ├── pages/           # Route pages
@@ -71,19 +116,15 @@ ride-booking/
 │   │   ├── hooks/           # useSocket, useGeolocation, useAuth
 │   │   ├── context/         # AuthContext
 │   │   └── services/        # api.js, authService.js, socketService.js, rideService.js, paymentService.js, notificationService.js, userService.js, adminService.js, settingsService.js
-│   └── public/              # sw.js (web-push service worker)
-├── server/                  # Express backend
-│   ├── src/
-│   │   ├── controllers/     # Route handlers
-│   │   ├── models/          # Mongoose schemas (User, Ride, Location, RefreshToken, OtpCode, Payment, Notification, AppSetting)
-│   │   ├── routes/          # API routes
-│   │   ├── middleware/       # auth.js (Passport JWT protect + roles), error.js
-│   │   ├── services/        # Business logic (rideService, driverService, authService, mailService, smsService, userService, paymentService, notificationService, settingsService)
-│   │   ├── utils/           # tokens.js (opaque token + SHA-256 hash)
-│   │   └── config/          # db.js, socket.js, passport.js (Local/Google/Facebook/JWT strategies)
-│   └── .env.example
+│   ├── public/              # sw.js (web-push service worker)
+│   ├── android/             # Capacitor Android project
+│   ├── ios/                 # Capacitor iOS project
+│   └── capacitor.config.json
 └── AGENTS.md
 ```
+
+> The data models, API endpoints and socket events documented below are the **contract this client
+> depends on**. The implementation lives in the web repo — change it there, never here.
 
 ## Frontend Routes
 
@@ -168,11 +209,13 @@ cd client && npm run dev        # Start dev server
 cd client && npm run build      # Production build
 cd client && npm run lint       # ESLint
 
-# Backend
-cd server && npm run dev        # Start with nodemon
-cd server && npm run start      # Production
-cd server && npm run seed       # Seed test data
+# Native app
+npx cap sync android             # Copy dist/ into the native project
+npx cap sync ios
+npx cap open android             # Android Studio
 ```
+
+> The backend commands live in the **web** repo — this app has no server of its own.
 
 ## Data Models
 
@@ -272,8 +315,8 @@ match the enum above — same ids are used for driver matching and fares.
 refundable, allowed even when `paymentsEnabled=false`. Once a ride is settled
 (either `succeeded` or `cash`) it is returned as-is — never charged again.
 
-**Stripe (online card)**: when `STRIPE_SECRET_KEY` is set in `server/.env`,
-card payments go through real Stripe Payment Intents. Flow:
+**Stripe (online card)**: when `STRIPE_SECRET_KEY` is set in the **web** repo's
+`server/.env`, card payments go through real Stripe Payment Intents. Flow:
 1. `POST /api/rides/:rideId/payment-intent` → `{ clientSecret, amount }` (idempotent per ride).
 2. Client confirms with the Payment Element (`stripe.confirmPayment`, `redirect: 'if_required'`).
 3. `POST pay` with `{ method: "card", paymentIntentId }` — server retrieves the
@@ -282,8 +325,8 @@ card payments go through real Stripe Payment Intents. Flow:
 Unconfirmed/declined intents are rejected (400). Refunds call `stripe.refunds.create`.
 The account's Payment Method Configuration is applied automatically via
 `automatic_payment_methods: { enabled: true }` — the `pmd_…` Payment Method
-Domain id in `server/.env` is informational (dashboard config); do NOT pass it as
-`payment_method_configuration` (that param needs a `pmc_…` id).
+Domain id in the **web** repo's `server/.env` is informational (dashboard config);
+do NOT pass it as `payment_method_configuration` (that param needs a `pmc_…` id).
 
 **Sandbox (fallback)**: when `STRIPE_SECRET_KEY` is unset, card payments use the
 simulated gateway — card ending `0002` always declines, `0000` always succeeds,
@@ -407,7 +450,8 @@ Known keys (defaults in `settingsService.DEFAULTS`): `baseFare`, `perKm`,
 ## Seed Credentials
 
 ```bash
-cd server && npm run seed   # resets users + driver positions
+# run in the WEB repo — it owns the backend
+cd ../ellicot-web/server && npm run seed
 ```
 
 | Role | Email | Password |
