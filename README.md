@@ -41,8 +41,10 @@ npx cap open android      # build/run from Android Studio
 `cap sync` copies `client/dist/` into the native project, so **you must build first** — a stale
 build ships the previous version of the app.
 
-To iterate quickly in a browser, `npm run dev` (http://localhost:5173) serves the same UI with the
-Vite proxy. Leave `VITE_API_URL` empty for that to use a local backend.
+To iterate quickly in a browser, `npm run dev` serves the same UI with the Vite proxy. Leave
+`VITE_API_URL` empty for that to use a local backend. To run the web app and this app at the same
+time, give them different ports and add the extra one to `CORS_ORIGINS` in the web repo's
+`server/.env` — see [`docs/LOCAL_TESTING.md`](docs/LOCAL_TESTING.md).
 
 ## Configuration
 
@@ -59,7 +61,7 @@ Vite proxy. Leave `VITE_API_URL` empty for that to use a local backend.
 
 | Layer | Choice |
 |---|---|
-| UI | React 18 + Vite + React Router v6, Tailwind CSS v4 |
+| UI | React 18 + Vite + React Router v7, Tailwind CSS v4 |
 | Shell | Capacitor 7 (Android + iOS) |
 | Maps | Leaflet + OpenStreetMap |
 | Realtime | Socket.io (`ride:update`, `driver:location`, `notification:new`, …) |
@@ -93,6 +95,8 @@ Vite proxy. Leave `VITE_API_URL` empty for that to use a local backend.
 
 ## Documentation
 
+- [`docs/LOCAL_TESTING.md`](docs/LOCAL_TESTING.md) — run the web app and this app side by side
+  locally, plus a manual test checklist
 - [`docs/MOBILE_APP_PLAN.md`](docs/MOBILE_APP_PLAN.md) — architecture, why Capacitor, and the
   pre-store checklist
 - [`AGENTS.md`](AGENTS.md) — full developer guide (design system, routes, data models, API contract)
