@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import useGeolocation from '../../hooks/useGeolocation.js';
+import { startTracking, stopTracking, permissionState } from '../../services/driverLocation.js';
 import {
   updateLocation,
   setAvailability,
@@ -30,7 +31,8 @@ import ActiveRidePanel from '../../components/rides/ActiveRidePanel.jsx';
 const ACTIVE = ['accepted', 'arriving', 'in_progress'];
 
 export default function Dashboard() {
-  const { position } = useGeolocation();
+  // watch: true keeps fixes streaming while the dashboard is open.
+  const { position } = useGeolocation({ watch: true });
   const [online, setOnline] = useState(false);
   const [toggling, setToggling] = useState(false);
   const [stats, setStats] = useState(null);
@@ -43,8 +45,11 @@ export default function Dashboard() {
   const [error, setError] = useState('');
   const [statsError, setStatsError] = useState('');
   const lastSent = useRef(0);
+  const [bgGranted, setBgGranted] = useState(true);
 
   // Own location broadcast: while online OR serving a ride, throttle to 1 per 2s.
+  // Heading and speed now come from the device rather than being pinned to 0, so
+  // the passenger's marker rotates with the car.
   useEffect(() => {
     if ((!online && !activeRide) || !position) return;
 
@@ -55,15 +60,49 @@ export default function Dashboard() {
       updateLocation({
         lat: position.lat,
         lng: position.lng,
-        heading: 0,
-        speed: 0,
+        heading: Number(position.heading) || 0,
+        speed: Number(position.speed) || 0,
       }).catch(() => {});
-      emitDriverLocation(position.lat, position.lng);
+      emitDriverLocation(position.lat, position.lng, position.heading || 0, position.speed || 0);
     };
     tick();
     const id = setInterval(tick, 2000);
     return () => clearInterval(id);
   }, [online, activeRide, position]);
+
+  // Native foreground service. Started while the driver is on duty or mid-ride
+  // and stopped the moment they are, so background location is never collected
+  // outside a shift. Without this the OS suspends the WebView on screen lock and
+  // the passenger's marker freezes mid-trip.
+  useEffect(() => {
+    let cancelled = false;
+    const shouldTrack = Boolean(online || activeRide);
+
+    if (shouldTrack) {
+      startTracking().then((r) => {
+        if (!cancelled) setBgGranted(r?.backgroundGranted !== false);
+      });
+    } else {
+      stopTracking();
+    }
+
+    return () => {
+      cancelled = true;
+      // Deliberately NOT stopping on unmount: unmounting happens on navigation
+      // and tab switches, which must not end an active trip. The service is
+      // stopped by the off-duty / ride-complete transitions instead.
+    };
+  }, [online, activeRide]);
+
+  // Tell the driver once if background location is not granted, so they know
+  // tracking will pause if they lock the screen mid-ride.
+  useEffect(() => {
+    let cancelled = false;
+    permissionState().then((s) => {
+      if (!cancelled) setBgGranted(Boolean(s?.background));
+    });
+    return () => { cancelled = true; };
+  }, [online, activeRide]);
 
   // Restore the real on/off duty state from the server so a page refresh
   // doesn't leave the UI showing "Off duty" while the driver is still available.
@@ -192,6 +231,20 @@ export default function Dashboard() {
       </p>
 
       {error && <p className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</p>}
+
+      {/* Shown while the driver is on duty but background location is not
+          granted, because the symptom otherwise appears only mid-ride: the
+          passenger's marker stops moving once the screen locks. */}
+      {(online || activeRide) && !bgGranted && (
+        <div className="mt-4 rounded-xl border-l-4 border-brand-600 bg-brand-50 px-4 py-3">
+          <p className="text-sm font-semibold text-brand-900">Allow background location</p>
+          <p className="mt-1 text-sm text-brand-800">
+            Your passenger can&apos;t follow you if the screen locks. Open
+            Settings &rarr; Permissions &rarr; Location and choose
+            <strong> Allow all the time</strong>, then come back here.
+          </p>
+        </div>
+      )}
 
       {/* Status card */}
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

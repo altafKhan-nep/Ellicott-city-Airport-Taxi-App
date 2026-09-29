@@ -34,6 +34,15 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
+
+        <!-- Keeps publishing the driver's position while the app is
+             backgrounded or the screen is locked. Started when the driver goes
+             on duty or accepts a ride, stopped when the trip ends. -->
+        <service
+            android:name=".DriverLocationService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location" />
     </application>
 
     <!-- Permissions -->
@@ -48,10 +57,27 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <!-- Location is intentionally foreground-only for v1: the app broadcasts a
-         driver's position while it is open. A background location service needs
-         its own native plugin and a Play Store justification, so it is not
-         requested here rather than being declared and never satisfied. -->
+    <!-- BACKGROUND LOCATION (Play Store declaration)
+         Justification: a passenger must be able to follow their driver's
+         actual position for the whole of a trip, including while their own
+         screen is locked and the app is backgrounded. Without this the
+         driver's marker freezes mid-ride. It is requested only while the
+         driver is on duty or mid-ride, and the service is stopped the moment
+         the trip ends, so collection is not continuous in the background.
+         The foreground service shows a permanent, low-priority "On an active
+         trip" notification so the behaviour is always visible to the driver. -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
+    <!-- Android 14+ requires an explicit foreground-service type, and the
+         matching permission, before a location service may run in the
+         background. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
+    <!-- Android 13+ will not display the foreground-service notification
+         without this, and a service whose notification is suppressed is killed
+         more aggressively. Requested only alongside the service. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- The driver screen has to keep working on a phone with no GPS fix, so
          location is declared as not-required rather than blocking install. -->
