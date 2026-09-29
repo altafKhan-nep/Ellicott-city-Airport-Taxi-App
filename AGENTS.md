@@ -51,6 +51,42 @@ npx cap open android        # Android Studio
 > **macOS gotcha**: Port `5000` is often taken by ControlCenter/AirPlay. A local backend defaults to
 > **5001**, which is what `client/vite.config.js` proxies to.
 
+### Native toolchain (Capacitor 8 / Android 16)
+
+Capacitor 8 ties the Android **target SDK to its own major version** — you cannot custom-set it.
+Capacitor 8.x targets **API 36**, which Google Play has required for new apps since
+**31 Aug 2026**. Bumping the SDK without the major upgrade is not possible.
+
+| Piece | Version | Notes |
+|-------|---------|-------|
+| Capacitor | 8.x | all 11 `@capacitor/*` packages move together |
+| `compileSdk` / `targetSdk` | 36 | Android 16 — Play's current requirement |
+| `minSdk` | 24 | Capacitor 8 raised this from 23 |
+| Android Gradle Plugin | 8.13.0 | |
+| Gradle wrapper | 8.14.3 | required by AGP 8.13 |
+| **JDK** | **21** | **hard requirement** — v8 plugins call `jvmToolchain(21)` |
+| iOS deployment target | 15.0 | |
+
+**The JDK 21 pin is the one that bites.** Building with a newer JDK fails with
+`Cannot find a Java installation ... matching: {languageVersion=21}`, because the plugins request a
+21 *toolchain* rather than using whatever runs Gradle. On macOS:
+
+```bash
+export JAVA_HOME=/opt/homebrew/opt/openjdk@21
+export ANDROID_HOME=/opt/homebrew/share/android-commandlinetools   # or ~/Library/Android/sdk
+cd client/android && ./gradlew :app:bundleRelease
+```
+
+A signed release AAB lands in `client/android/app/build/outputs/bundle/release/`.
+`local.properties` holds the machine-specific SDK path and is gitignored — never commit it.
+
+Verify the SDK level from the merged manifest rather than trusting the config:
+
+```bash
+grep -oE 'android:(min|target)SdkVersion="[0-9]+"' \
+  client/android/app/build/intermediates/merged_manifest/release/processReleaseMainManifest/AndroidManifest.xml
+```
+
 ## Two things that silently break the app
 
 1. **Socket auth.** The server accepts *only* a JWT (`socket.handshake.auth.token`) and has no

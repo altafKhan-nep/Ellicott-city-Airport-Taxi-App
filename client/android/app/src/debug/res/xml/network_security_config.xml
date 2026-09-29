@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  DEBUG BUILDS ONLY.
+
+  The Capacitor WebView is served from the https://localhost origin, so a plain
+  http:// request to the dev backend is treated as mixed content and blocked.
+  This permits cleartext for loopback only, which is where `adb reverse` forwards
+  the phone's localhost:5001 to the development machine's backend.
+
+  Release builds do not include this file, so they stay HTTPS-only.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>
