@@ -23,6 +23,13 @@ import AdminDashboard from './pages/admin/Dashboard.jsx';
 import Profile from './pages/Profile.jsx';
 import { Spinner } from './components/ui/Spinner.jsx';
 import VerifyEmailBanner from './components/auth/VerifyEmailBanner.jsx';
+import useIsPhone from './hooks/useIsPhone.js';
+import MobileShell from './components/mobile/MobileShell.jsx';
+import MobileHome from './pages/mobile/MobileHome.jsx';
+import MobileBook from './pages/mobile/MobileBook.jsx';
+import MobileTrips from './pages/mobile/MobileTrips.jsx';
+import MobileProfile from './pages/mobile/MobileProfile.jsx';
+import MobileTrack from './pages/mobile/MobileTrack.jsx';
 
 const RequireRole = ({ role, children }) => {
   const { user, loading } = useAuth();
@@ -39,32 +46,42 @@ const RequireRole = ({ role, children }) => {
 };
 
 export default function App() {
+  // Phones get a native-style shell (slim app bar + bottom tab bar) and the
+  // dedicated mobile screens. Tablets and desktop keep the site layout below.
+  const isPhone = useIsPhone();
+
+  const page = (mobile, desktop) => (isPhone ? mobile : desktop);
+
+  const shell = (children) => (isPhone ? <MobileShell>{children}</MobileShell> : children);
+
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
+      {!isPhone && <Navbar />}
       <VerifyEmailBanner />
-      <main className="flex-1">
+      <main className={isPhone ? '' : 'flex-1'}>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/services/:slug" element={<ServiceDetail />} />
-          <Route path="/fleet" element={<Fleet />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/reservations" element={<Reservations />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/auth/social" element={<SocialCallback />} />
+          <Route path="/" element={shell(page(<MobileHome />, <Home />))} />
+          {/* Marketing + auth pages keep their existing layouts; on a phone they
+              just lose the desktop navbar/footer and gain the app bar + tab bar. */}
+          <Route path="/about" element={shell(<About />)} />
+          <Route path="/services" element={shell(<Services />)} />
+          <Route path="/services/:slug" element={shell(<ServiceDetail />)} />
+          <Route path="/fleet" element={shell(<Fleet />)} />
+          <Route path="/contact" element={shell(<Contact />)} />
+          <Route path="/careers" element={shell(<Careers />)} />
+          <Route path="/reservations" element={shell(page(<MobileBook />, <Reservations />))} />
+          <Route path="/login" element={shell(<Login />)} />
+          <Route path="/register" element={shell(<Register />)} />
+          <Route path="/forgot-password" element={shell(<ForgotPassword />)} />
+          <Route path="/reset-password" element={shell(<ResetPassword />)} />
+          <Route path="/verify-email" element={shell(<VerifyEmail />)} />
+          <Route path="/auth/social" element={shell(<SocialCallback />)} />
 
           <Route
             path="/rides/history"
             element={
               <RequireRole role="passenger">
-                <RideHistory />
+                {shell(page(<MobileTrips />, <RideHistory />))}
               </RequireRole>
             }
           />
@@ -72,7 +89,7 @@ export default function App() {
             path="/rides/track/:id"
             element={
               <RequireRole role="passenger">
-                <RideTracking />
+                {shell(page(<MobileTrack />, <RideTracking />))}
               </RequireRole>
             }
           />
@@ -81,7 +98,7 @@ export default function App() {
             path="/profile"
             element={
               <RequireRole>
-                <Profile />
+                {shell(page(<MobileProfile />, <Profile />))}
               </RequireRole>
             }
           />
@@ -90,7 +107,7 @@ export default function App() {
             path="/driver"
             element={
               <RequireRole role="driver">
-                <DriverDashboard />
+                {shell(<DriverDashboard />)}
               </RequireRole>
             }
           />
@@ -99,7 +116,7 @@ export default function App() {
             path="/admin"
             element={
               <RequireRole role="admin">
-                <AdminDashboard />
+                {shell(<AdminDashboard />)}
               </RequireRole>
             }
           />
@@ -107,7 +124,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
-      <Footer />
+      {!isPhone && <Footer />}
     </div>
   );
 }
