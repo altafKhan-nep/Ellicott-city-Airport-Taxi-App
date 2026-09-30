@@ -3,7 +3,7 @@ export function Spinner({ size = 'md', label }) {
   return (
     <div className="flex items-center gap-2 text-sm text-muted">
       <span
-        className={`${sizes[size]} inline-block animate-spin rounded-full border-2 border-slate-300 border-t-brand-600`}
+        className={`${sizes[size]} inline-block animate-spin rounded-full border-2 border-accent-300 border-t-brand-600`}
       />
       {label}
     </div>

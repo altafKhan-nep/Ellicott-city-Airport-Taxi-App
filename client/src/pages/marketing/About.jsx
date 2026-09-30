@@ -167,7 +167,7 @@ export default function About() {
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {WHY_US.map((f, i) => (
               <Reveal key={f.title} delay={(i % 4) * 80} className="h-full">
-                <div className="card-lift h-full rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+                <div className="card-lift h-full rounded-3xl border border-accent-200 bg-white p-7 shadow-sm">
                   <span className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-gradient-soft">
                     <f.icon className="h-7 w-7 text-brand-700" />
                   </span>

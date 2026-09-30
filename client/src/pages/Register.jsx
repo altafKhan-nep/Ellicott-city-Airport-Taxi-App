@@ -46,8 +46,8 @@ export default function Register() {
   if (done) {
     return (
       <div className="mx-auto flex max-w-md flex-col px-4 py-12">
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-700">
+        <div className="rounded-2xl border border-accent-200 bg-white p-8 text-center shadow-sm">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-success-100 text-success-700">
             <CheckCircle2 className="h-8 w-8" />
           </div>
           <h1 className="text-2xl font-bold">Account created</h1>
@@ -56,7 +56,7 @@ export default function Register() {
             activate your account.
           </p>
           {done.verificationLink && (
-            <div className="mt-4 rounded-xl bg-slate-50 px-4 py-3 text-left text-sm">
+            <div className="mt-4 rounded-xl bg-accent-50 px-4 py-3 text-left text-sm">
               <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted">
                 Development verification link
               </p>
@@ -78,7 +78,7 @@ export default function Register() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col px-4 py-12">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+      <div className="rounded-2xl border border-accent-200 bg-white p-8 shadow-sm">
         <h1 className="text-2xl font-bold">Create your account</h1>
         <p className="mt-1 text-sm text-muted">Join Ellicott City Airport Taxi in under a minute.</p>
 
@@ -108,7 +108,7 @@ export default function Register() {
                   className={`rounded-xl border p-3 text-sm font-semibold transition-colors ${
                     form.role === r.id
                       ? 'border-brand-500 bg-brand-50 text-brand-700 ring-2 ring-brand-100'
-                      : 'border-slate-200 hover:border-slate-300'
+                      : 'border-accent-200 hover:border-accent-300'
                   }`}
                 >
                   {r.label}
@@ -117,7 +117,7 @@ export default function Register() {
             </div>
           </div>
 
-          {error && <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</p>}
+          {error && <p className="rounded-xl bg-signal-50 px-4 py-2.5 text-sm text-signal-700">{error}</p>}
           <Button type="submit" size="lg" loading={loading} className="w-full">
             Create account
           </Button>

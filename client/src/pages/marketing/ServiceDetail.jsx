@@ -3,13 +3,13 @@ import { Phone, Check, Star, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { Reveal } from '../../components/ui/Reveal.jsx';
-import { SERVICES, getService } from '../../data/services.js';
+import { SERVICES } from '../../data/services.js';
 
 export default function ServiceDetail() {
   const { slug } = useParams();
   const { user } = useAuth();
   const bookUrl = user ? '/reservations' : '/login';
-  const service = getService(slug);
+  const service = SERVICES.find((s) => s.slug === slug);
 
   if (!service) {
     return (
@@ -96,7 +96,7 @@ export default function ServiceDetail() {
           </div>
 
           <div className="lg:col-span-2">
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="rounded-3xl border border-accent-200 bg-white p-8 shadow-sm">
               <h3 className="text-base font-bold text-ink">Why riders choose us</h3>
               <ul className="mt-5 space-y-4">
                 {service.features.map((f) => (
@@ -108,7 +108,7 @@ export default function ServiceDetail() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-8 border-t border-slate-100 pt-6">
+              <div className="mt-8 border-t border-accent-100 pt-6">
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-semibold text-ink">5-star rated</span>
                   <span className="flex gap-0.5 text-gold-400" aria-label="Five stars">
@@ -152,7 +152,7 @@ export default function ServiceDetail() {
               <Reveal key={s.slug} delay={(i % 3) * 90} className="h-full">
                 <Link
                   to={`/services/${s.slug}`}
-                  className="card-lift group flex h-full items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                  className="card-lift group flex h-full items-center gap-4 rounded-2xl border border-accent-200 bg-white p-5 shadow-sm"
                 >
                   <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-brand-gradient-soft">
                     <s.icon className="h-6 w-6 text-brand-700" />

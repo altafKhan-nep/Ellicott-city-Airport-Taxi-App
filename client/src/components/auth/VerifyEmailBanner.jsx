@@ -39,7 +39,7 @@ export default function VerifyEmailBanner() {
             {sending ? 'Sending…' : 'Resend email'}
           </button>
         )}
-        {error && <span className="text-red-700">{error}</span>}
+        {error && <span className="text-signal-700">{error}</span>}
       </div>
     </div>
   );

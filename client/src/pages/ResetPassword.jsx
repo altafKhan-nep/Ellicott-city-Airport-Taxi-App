@@ -41,13 +41,13 @@ export default function ResetPassword() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col px-4 py-12">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+      <div className="rounded-2xl border border-accent-200 bg-white p-8 shadow-sm">
         <h1 className="text-2xl font-bold">Choose a new password</h1>
         <p className="mt-1 text-sm text-muted">Make sure it's at least 6 characters.</p>
 
         {done ? (
           <div className="mt-6 space-y-4">
-            <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+            <div className="rounded-xl border border-success-200 bg-success-50 px-4 py-3 text-sm text-success-800">
               Your password has been reset. All other sessions were signed out.
             </div>
             <Link to="/login" className="block text-center text-sm font-semibold text-brand-700 hover:underline">
@@ -72,7 +72,7 @@ export default function ResetPassword() {
               value={form.confirm}
               onChange={(e) => setForm({ ...form, confirm: e.target.value })}
             />
-            {error && <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</p>}
+            {error && <p className="rounded-xl bg-signal-50 px-4 py-2.5 text-sm text-signal-700">{error}</p>}
             <Button type="submit" size="lg" loading={loading} className="w-full">
               Reset password
             </Button>

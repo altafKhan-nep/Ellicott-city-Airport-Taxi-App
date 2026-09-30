@@ -89,12 +89,12 @@ export default function LocationSearch({ label, icon, value, onSelect, placehold
       {label && <span className="mb-1.5 block text-sm font-medium text-ink">{label}</span>}
       <div className="relative" ref={boxRef}>
         {icon && (
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-accent-400">
             <Icon className="h-4 w-4" />
           </span>
         )}
         <input
-          className="input-pill w-full border border-slate-300 bg-white py-3 pl-10 pr-9 text-sm outline-none transition-colors placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200"
+          className="input-pill w-full border border-accent-300 bg-white py-3 pl-10 pr-9 text-sm outline-none transition-colors placeholder:text-accent-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200"
           value={query}
           placeholder={placeholder}
           onChange={(e) => setQuery(e.target.value)}
@@ -109,7 +109,7 @@ export default function LocationSearch({ label, icon, value, onSelect, placehold
         )}
 
         {open && results.length > 0 && (
-          <ul className="absolute left-0 right-0 z-[1100] mt-2 max-h-72 overflow-y-auto rounded-2xl border border-slate-200 bg-white py-1 shadow-xl">
+          <ul className="absolute left-0 right-0 z-[1100] mt-2 max-h-72 overflow-y-auto rounded-2xl border border-accent-200 bg-white py-1 shadow-xl">
             {results.map((r, i) => (
               <li key={r.id}>
                 <button
@@ -124,7 +124,7 @@ export default function LocationSearch({ label, icon, value, onSelect, placehold
                   }`}
                 >
                   {icon && (
-                    <span className="mt-0.5 shrink-0 text-slate-400">
+                    <span className="mt-0.5 shrink-0 text-accent-400">
                       <Icon className="h-4 w-4" />
                     </span>
                   )}

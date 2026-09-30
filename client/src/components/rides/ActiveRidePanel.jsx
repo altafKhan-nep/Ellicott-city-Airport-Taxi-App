@@ -61,8 +61,8 @@ export default function ActiveRidePanel({ ride, driverPos, passengerPos, onStatu
   const status = ride?.status;
 
   return (
-    <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-6 py-4">
+    <div className="mt-6 overflow-hidden rounded-2xl border border-accent-200 bg-white shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-accent-100 px-6 py-4">
         <div>
           <h2 className="font-bold">Active ride</h2>
           <p className="text-sm text-muted">
@@ -117,7 +117,7 @@ export default function ActiveRidePanel({ ride, driverPos, passengerPos, onStatu
                 />
                 <Polyline
                   positions={routePositions}
-                  pathOptions={{ color: '#c62828', weight: 5, opacity: 0.9, lineCap: 'round' }}
+                  pathOptions={{ color: '#c22020', weight: 5, opacity: 0.9, lineCap: 'round' }}
                 />
               </>
             )}
@@ -131,7 +131,7 @@ export default function ActiveRidePanel({ ride, driverPos, passengerPos, onStatu
               <span className="h-2 w-2 rounded-full bg-[#2563eb]" /> Passenger
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" /> Pickup
+              <span className="h-2 w-2 rounded-full bg-success-500" /> Pickup
             </span>
           </div>
 
@@ -139,7 +139,7 @@ export default function ActiveRidePanel({ ride, driverPos, passengerPos, onStatu
         </div>
 
         {/* Details + status controls */}
-        <div className="space-y-4 border-slate-100 p-5 lg:border-l">
+        <div className="space-y-4 border-accent-100 p-5 lg:border-l">
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between gap-3">
               <dt className="text-muted">Pickup</dt>

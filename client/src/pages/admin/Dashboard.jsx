@@ -22,27 +22,27 @@ import { vehicleLabel } from '../../data/vehicles.js';
 
 const STATUS_STYLE = {
   pending: 'bg-accent-50 text-accent-700',
-  accepted: 'bg-blue-50 text-blue-700',
-  arriving: 'bg-blue-50 text-blue-700',
+  accepted: 'bg-brand-50 text-brand-700',
+  arriving: 'bg-brand-50 text-brand-700',
   in_progress: 'bg-brand-50 text-brand-700',
   completed: 'bg-brand-50 text-brand-700',
-  cancelled: 'bg-slate-100 text-slate-500',
+  cancelled: 'bg-accent-100 text-accent-500',
 };
 
 const PAY_STYLE = {
-  succeeded: 'bg-green-50 text-green-700',
+  succeeded: 'bg-success-50 text-success-700',
   cash: 'bg-gold-100 text-gold-700',
-  failed: 'bg-red-50 text-red-700',
-  refunded: 'bg-blue-50 text-blue-700',
-  pending: 'bg-yellow-50 text-yellow-700',
+  failed: 'bg-signal-50 text-signal-700',
+  refunded: 'bg-brand-50 text-brand-700',
+  pending: 'bg-gold-50 text-gold-700',
 };
 
 const PAY_ACCENT = {
-  succeeded: { dot: 'bg-green-500', text: 'text-green-700', top: 'border-t-green-500' },
+  succeeded: { dot: 'bg-success-500', text: 'text-success-700', top: 'border-t-green-500' },
   cash: { dot: 'bg-gold-500', text: 'text-gold-700', top: 'border-t-gold-500' },
-  failed: { dot: 'bg-red-500', text: 'text-red-700', top: 'border-t-red-500' },
-  refunded: { dot: 'bg-blue-500', text: 'text-blue-700', top: 'border-t-blue-500' },
-  pending: { dot: 'bg-yellow-500', text: 'text-yellow-700', top: 'border-t-yellow-500' },
+  failed: { dot: 'bg-signal-500', text: 'text-signal-700', top: 'border-t-red-500' },
+  refunded: { dot: 'bg-brand-500', text: 'text-brand-700', top: 'border-t-blue-500' },
+  pending: { dot: 'bg-gold-500', text: 'text-gold-700', top: 'border-t-yellow-500' },
 };
 
 export default function Dashboard() {
@@ -204,7 +204,7 @@ export default function Dashboard() {
     }
   };
 
-  const card = 'rounded-2xl border border-slate-200 bg-white p-5 shadow-sm';
+  const card = 'rounded-2xl border border-accent-200 bg-white p-5 shadow-sm';
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -216,7 +216,7 @@ export default function Dashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="mt-6 flex flex-wrap gap-1 rounded-xl bg-slate-100 p-1 sm:inline-flex">
+      <div className="mt-6 flex flex-wrap gap-1 rounded-xl bg-accent-100 p-1 sm:inline-flex">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -253,11 +253,11 @@ export default function Dashboard() {
             ))}
           </div>
 
-          <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="mt-6 rounded-2xl border border-accent-200 bg-white p-6 shadow-sm">
             <h2 className="font-bold">Recent rides</h2>
             <ul className="mt-4 space-y-3 text-sm">
               {analytics.recentRides.slice(0, 5).map((r) => (
-                <li key={r._id} className="flex items-center justify-between border-b border-slate-50 pb-3 last:border-0">
+                <li key={r._id} className="flex items-center justify-between border-b border-accent-50 pb-3 last:border-0">
                   <span>
                     {r.passenger?.name || 'Unknown'} → {r.pickup.address}
                   </span>
@@ -270,10 +270,10 @@ export default function Dashboard() {
       )}
 
       {active === 'rides' && (
-        <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="mt-6 overflow-hidden rounded-2xl border border-accent-200 bg-white shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-muted">
+              <thead className="bg-accent-50 text-xs uppercase tracking-wide text-muted">
                 <tr>
                   <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3">Passenger</th>
@@ -285,9 +285,9 @@ export default function Dashboard() {
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-accent-100">
                 {rides.map((r) => (
-                  <tr key={r._id} className="hover:bg-slate-50">
+                  <tr key={r._id} className="hover:bg-accent-50">
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2.5 py-1 text-xs font-medium capitalize ${STATUS_STYLE[r.status]}`}>
                         {r.status.replace('_', ' ')}
@@ -325,7 +325,7 @@ export default function Dashboard() {
                               onChange={(e) =>
                                 setAssignSel((m) => ({ ...m, [r._id]: e.target.value }))
                               }
-                              className="input-pill border border-slate-300 bg-white px-2 py-1.5 text-xs outline-none focus:border-brand-500"
+                              className="input-pill border border-accent-300 bg-white px-2 py-1.5 text-xs outline-none focus:border-brand-500"
                             >
                               <option value="">Select driver…</option>
                               {drivers.map((d) => (
@@ -369,7 +369,7 @@ export default function Dashboard() {
                   className={`ml-auto rounded-full px-2.5 py-1 text-xs font-medium ${
                     d.driverDetails?.isAvailable
                       ? 'bg-brand-50 text-brand-700'
-                      : 'bg-slate-100 text-slate-500'
+                      : 'bg-accent-100 text-accent-500'
                   }`}
                 >
                   {d.driverDetails?.isAvailable ? 'Online' : 'Offline'}
@@ -385,7 +385,7 @@ export default function Dashboard() {
 
       {active === 'users' && (
         <div className="mt-6">
-          <div className="mb-4 flex max-w-sm items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2.5">
+          <div className="mb-4 flex max-w-sm items-center gap-2 rounded-full border border-accent-300 bg-white px-4 py-2.5">
             <Search className="h-4 w-4 text-muted" aria-hidden="true" />
             <input
               value={userSearch}
@@ -394,12 +394,12 @@ export default function Dashboard() {
                 loadUsers(e.target.value);
               }}
               placeholder="Search name, email or phone…"
-              className="w-full text-sm outline-none placeholder:text-slate-400"
+              className="w-full text-sm outline-none placeholder:text-accent-400"
             />
           </div>
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-2xl border border-accent-200 bg-white shadow-sm">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-muted">
+              <thead className="bg-accent-50 text-xs uppercase tracking-wide text-muted">
                 <tr>
                   <th className="px-4 py-3">User</th>
                   <th className="px-4 py-3">Role</th>
@@ -407,9 +407,9 @@ export default function Dashboard() {
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-accent-100">
                 {users.map((u) => (
-                  <tr key={u._id} className="hover:bg-slate-50">
+                  <tr key={u._id} className="hover:bg-accent-50">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         {u.avatar ? (
@@ -428,7 +428,7 @@ export default function Dashboard() {
                     <td className="px-4 py-3 capitalize text-muted">{u.role}</td>
                     <td className="px-4 py-3">
                       {u.isSuspended ? (
-                        <span className="rounded-full bg-red-50 px-2.5 py-1 text-xs font-medium text-red-700">Suspended</span>
+                        <span className="rounded-full bg-signal-50 px-2.5 py-1 text-xs font-medium text-signal-700">Suspended</span>
                       ) : (
                         <span className="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700">Active</span>
                       )}
@@ -474,9 +474,9 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
-          <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="mt-6 overflow-hidden rounded-2xl border border-accent-200 bg-white shadow-sm">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-muted">
+              <thead className="bg-accent-50 text-xs uppercase tracking-wide text-muted">
                 <tr>
                   <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3">Method</th>
@@ -486,9 +486,9 @@ export default function Dashboard() {
                   <th className="px-4 py-3">Date</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-accent-100">
                 {payments.map((p) => (
-                  <tr key={p._id} className="hover:bg-slate-50">
+                  <tr key={p._id} className="hover:bg-accent-50">
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2.5 py-1 text-xs font-medium capitalize ${PAY_STYLE[p.status]}`}>
                         {p.status}
@@ -538,7 +538,7 @@ export default function Dashboard() {
                     onChange={(e) =>
                       setSetting(f.key, e.target.value === '' ? null : Number(e.target.value))
                     }
-                    className="input-pill w-full border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500"
+                    className="input-pill w-full border border-accent-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500"
                   />
                 </label>
               ))}
@@ -569,7 +569,7 @@ export default function Dashboard() {
                 <input
                   value={settings.supportPhone || ''}
                   onChange={(e) => setSetting('supportPhone', e.target.value)}
-                  className="input-pill w-full border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500"
+                  className="input-pill w-full border border-accent-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500"
                 />
               </label>
               <label className="block">
@@ -577,7 +577,7 @@ export default function Dashboard() {
                 <input
                   value={settings.supportEmail || ''}
                   onChange={(e) => setSetting('supportEmail', e.target.value)}
-                  className="input-pill w-full border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500"
+                  className="input-pill w-full border border-accent-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-brand-500"
                 />
               </label>
             </div>

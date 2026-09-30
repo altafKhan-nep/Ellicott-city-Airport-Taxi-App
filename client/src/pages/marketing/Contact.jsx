@@ -4,7 +4,7 @@ import { CheckCircle2, Phone } from 'lucide-react';
 import { SERVICES } from '../../data/services.js';
 
 const inputCls =
-  'w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200';
+  'w-full rounded-xl border border-accent-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-accent-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200';
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -57,7 +57,7 @@ export default function Contact() {
         <div className="grid gap-12 lg:grid-cols-5">
           {/* Form */}
           <div className="lg:col-span-3">
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm sm:p-10">
+            <div className="rounded-3xl border border-accent-200 bg-white p-8 shadow-sm sm:p-10">
               <h2 className="text-2xl font-bold text-ink">Get a free quote</h2>
               <p className="mt-2 text-sm text-muted">
                 Fill in a few details and our dispatch team will get right back to you.
@@ -130,7 +130,7 @@ export default function Contact() {
 
           {/* Info */}
           <div className="space-y-5 lg:col-span-2">
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="rounded-3xl border border-accent-200 bg-white p-8 shadow-sm">
               <h3 className="text-base font-bold text-ink">Call or email</h3>
               <a href="tel:4103655556" className="mt-4 block text-2xl font-extrabold text-brand-900">
                 (410) 365-5556
@@ -141,7 +141,7 @@ export default function Contact() {
               <p className="mt-4 text-sm text-muted">Available 24 hours a day, 7 days a week.</p>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="rounded-3xl border border-accent-200 bg-white p-8 shadow-sm">
               <h3 className="text-base font-bold text-ink">Find us</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted">
                 Based in Ellicott City, Maryland — serving Maryland, DC, and Virginia. Door-to-door,

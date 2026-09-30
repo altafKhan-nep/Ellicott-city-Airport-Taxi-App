@@ -6,7 +6,11 @@ import { Button } from '../../components/ui/Button.jsx';
 import { Reveal } from '../../components/ui/Reveal.jsx';
 import { useMediaQuery } from '../../hooks/useMediaQuery.js';
 import { useWebGLSupport } from '../../components/three/useWebGLSupport.js';
-import { SERVICES, FEATURED_SERVICES } from '../../data/services.js';
+import { SERVICES } from '../../data/services.js';
+
+// The web app sources this list from CatalogContext; the app has no catalog
+// context, so it names the same five services directly.
+const FEATURED_SERVICES = ['wedding', 'airport', 'shuttle', 'corporate', 'night-out'];
 
 // Lazy-loaded so the WebGL/three bundle only downloads when the taxi actually renders.
 const HeroTaxiScene = lazy(() => import('../../components/three/HeroTaxiScene.jsx'));
@@ -135,13 +139,13 @@ export default function Home() {
                 </p>
 
                 <div className="mt-6 space-y-4">
-                  <div className="flex items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-4 py-3">
+                  <div className="flex items-center gap-3 rounded-full border border-accent-200 bg-accent-50 px-4 py-3">
                     <MapPin className="h-4 w-4 text-brand-600" />
-                    <span className="text-sm text-slate-500">Pickup — where are you?</span>
+                    <span className="text-sm text-accent-500">Pickup — where are you?</span>
                   </div>
-                  <div className="flex items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-4 py-3">
+                  <div className="flex items-center gap-3 rounded-full border border-accent-200 bg-accent-50 px-4 py-3">
                     <Flag className="h-4 w-4 text-brand-600" />
-                    <span className="text-sm text-slate-500">Dropoff — where to?</span>
+                    <span className="text-sm text-accent-500">Dropoff — where to?</span>
                   </div>
                 </div>
 
@@ -284,7 +288,7 @@ export default function Home() {
               <Reveal key={s.slug} delay={(i % 3) * 100} className="h-full">
                 <Link
                   to={`/services/${s.slug}`}
-                  className="card-lift group relative flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-7 shadow-sm"
+                  className="card-lift group relative flex h-full flex-col rounded-3xl border border-accent-200 bg-white p-7 shadow-sm"
                 >
                   <div className="absolute inset-x-0 top-0 h-1.5 rounded-t-3xl bg-brand-gradient opacity-0 transition-opacity group-hover:opacity-100" />
                   <span className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-gradient-soft">
@@ -355,7 +359,7 @@ export default function Home() {
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {STEPS.map((s, i) => (
               <Reveal key={s.n} delay={i * 120} className="h-full">
-                <div className="card-lift h-full rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+                <div className="card-lift h-full rounded-3xl border border-accent-200 bg-white p-8 shadow-sm">
                   <div className="text-brand-gradient text-4xl font-extrabold">{s.n}</div>
                   <h3 className="mt-4 text-lg font-bold text-ink">{s.t}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted">{s.d}</p>
@@ -426,7 +430,7 @@ export default function Home() {
             {AREAS.map((a) => (
               <span
                 key={a}
-                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-ink shadow-sm transition-colors hover:border-brand-300"
+                className="rounded-full border border-accent-200 bg-white px-4 py-2 text-sm font-medium text-ink shadow-sm transition-colors hover:border-brand-300"
               >
                 {a}
               </span>

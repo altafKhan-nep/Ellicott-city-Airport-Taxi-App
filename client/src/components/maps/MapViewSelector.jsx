@@ -79,14 +79,14 @@ export function MapViewSelector({ view, onChange }) {
         className={`flex h-11 w-11 items-center justify-center rounded-full shadow-lg transition-all ${
           open
             ? 'bg-brand-900 text-white ring-4 ring-brand-200'
-            : 'bg-white text-brand-900 ring-1 ring-slate-200 hover:bg-brand-50'
+            : 'bg-white text-brand-900 ring-1 ring-accent-200 hover:bg-brand-50'
         }`}
       >
         <LayersIcon className="h-5.5 w-5.5" />
       </button>
 
       {open && (
-        <div className="absolute bottom-14 right-0 w-44 origin-bottom-right rounded-2xl bg-white p-1.5 shadow-2xl ring-1 ring-slate-200">
+        <div className="absolute bottom-14 right-0 w-44 origin-bottom-right rounded-2xl bg-white p-1.5 shadow-2xl ring-1 ring-accent-200">
           {MAP_VIEWS.map((v) => {
             const active = v.id === view;
             return (
@@ -98,10 +98,10 @@ export function MapViewSelector({ view, onChange }) {
                   setOpen(false);
                 }}
                 className={`flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left transition-colors ${
-                  active ? 'bg-brand-50' : 'hover:bg-slate-50'
+                  active ? 'bg-brand-50' : 'hover:bg-accent-50'
                 }`}
               >
-                <span className="shrink-0 overflow-hidden rounded-lg ring-1 ring-slate-200">{v.swatch}</span>
+                <span className="shrink-0 overflow-hidden rounded-lg ring-1 ring-accent-200">{v.swatch}</span>
                 <span className={`flex-1 text-sm font-medium ${active ? 'text-brand-900' : 'text-ink'}`}>
                   {v.label}
                 </span>

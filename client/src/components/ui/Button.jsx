@@ -8,9 +8,9 @@ export function Button({
 }) {
   const variants = {
     primary: 'btn-brand-gradient text-white',
-    secondary: 'bg-white text-ink border border-slate-300 hover:bg-slate-50',
-    danger: 'bg-red-600 text-white hover:bg-red-700',
-    ghost: 'text-ink hover:bg-slate-100',
+    secondary: 'bg-white text-ink border border-accent-300 hover:bg-accent-50',
+    danger: 'bg-signal-600 text-white hover:bg-signal-700',
+    ghost: 'text-ink hover:bg-accent-100',
     outline: 'border border-brand-600 text-brand-700 hover:bg-brand-50',
   };
   const sizes = {

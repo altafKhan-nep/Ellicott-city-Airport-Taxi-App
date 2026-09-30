@@ -46,7 +46,7 @@ export default function SocialCallback() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col px-4 py-24 text-center">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+      <div className="rounded-2xl border border-accent-200 bg-white p-8 shadow-sm">
         {status === 'loading' && (
           <>
             <h1 className="text-2xl font-bold">Finishing sign-in…</h1>
@@ -57,7 +57,7 @@ export default function SocialCallback() {
         )}
         {status === 'error' && (
           <>
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-2xl text-red-700">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-signal-100 text-2xl text-signal-700">
               !
             </div>
             <h1 className="text-2xl font-bold">Sign-in failed</h1>

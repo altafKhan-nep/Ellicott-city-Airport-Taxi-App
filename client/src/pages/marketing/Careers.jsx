@@ -52,7 +52,7 @@ export default function Careers() {
   };
 
   const field =
-    'input-pill w-full border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition-colors placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200';
+    'input-pill w-full border border-accent-300 bg-white px-4 py-3 text-sm outline-none transition-colors placeholder:text-accent-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200';
 
   return (
     <div>
@@ -93,7 +93,7 @@ export default function Careers() {
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {PERKS.map((p) => (
-            <div key={p.title} className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+            <div key={p.title} className="rounded-3xl border border-accent-200 bg-white p-7 shadow-sm">
               <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand-gradient-soft">
                 <p.icon className="h-6 w-6 text-brand-700" />
               </span>
@@ -130,7 +130,7 @@ export default function Careers() {
               ))}
             </ul>
 
-            <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-6">
+            <div className="mt-10 rounded-2xl border border-accent-200 bg-white p-6">
               <h3 className="text-base font-bold text-ink">Prefer a paper application?</h3>
               <p className="mt-1.5 text-sm text-muted">
                 Download the application, fill it in, and return it to our dispatch office in
@@ -159,7 +159,7 @@ export default function Careers() {
           </div>
 
           {/* Contact form */}
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="rounded-3xl border border-accent-200 bg-white p-8 shadow-sm">
             <h2 className="text-2xl font-bold text-ink">Get in touch</h2>
             <p className="mt-1.5 text-sm text-muted">
               Tell us about yourself — our recruiting team responds within one business day.
@@ -195,10 +195,10 @@ export default function Careers() {
                   placeholder="Message *"
                   value={form.message || ''}
                   onChange={set('message')}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition-colors placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200"
+                  className="w-full rounded-2xl border border-accent-300 bg-white px-4 py-3 text-sm outline-none transition-colors placeholder:text-accent-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200"
                 />
 
-                {error && <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</p>}
+                {error && <p className="rounded-xl bg-signal-50 px-4 py-2.5 text-sm text-signal-700">{error}</p>}
 
                 <button
                   type="submit"

@@ -230,7 +230,7 @@ export default function Dashboard() {
         Go online to receive ride requests. Your location is shared while online.
       </p>
 
-      {error && <p className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</p>}
+      {error && <p className="mt-4 rounded-xl bg-signal-50 px-4 py-2.5 text-sm text-signal-700">{error}</p>}
 
       {/* Shown while the driver is on duty but background location is not
           granted, because the symptom otherwise appears only mid-ride: the
@@ -247,7 +247,7 @@ export default function Dashboard() {
       )}
 
       {/* Status card */}
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="mt-6 rounded-2xl border border-accent-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
@@ -256,7 +256,7 @@ export default function Dashboard() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-400 opacity-75" />
                 )}
                 <span
-                  className={`relative inline-flex h-3 w-3 rounded-full ${online ? 'bg-brand-500' : 'bg-slate-400'}`}
+                  className={`relative inline-flex h-3 w-3 rounded-full ${online ? 'bg-brand-500' : 'bg-accent-400'}`}
                 />
               </span>
               <p className="text-sm font-semibold">Status: {online ? 'On duty' : 'Off duty'}</p>
@@ -284,7 +284,7 @@ export default function Dashboard() {
 
       {/* Ride requests (hidden while serving a ride) */}
       {online && !activeRide && (
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mt-6 rounded-2xl border border-accent-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <h2 className="font-bold">Ride requests</h2>
             {requests.length > 0 && (
@@ -301,7 +301,7 @@ export default function Dashboard() {
           ) : (
             <ul className="mt-4 space-y-3">
               {requests.map((r) => (
-                <li key={r._id} className="rounded-xl border border-slate-100 p-4">
+                <li key={r._id} className="rounded-xl border border-accent-100 p-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0 text-sm">
                       <p className="font-semibold text-ink">{r.pickup.address}</p>
@@ -333,7 +333,7 @@ export default function Dashboard() {
           { label: 'Completed', value: stats?.completedRides ?? '–' },
           { label: 'Earnings', value: stats ? `$${stats.totalEarnings.toFixed(2)}` : '–' },
         ].map((s) => (
-          <div key={s.label} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div key={s.label} className="rounded-2xl border border-accent-200 bg-white p-6 shadow-sm">
             <p className="text-sm text-muted">{s.label}</p>
             <p className="mt-1 whitespace-nowrap text-3xl font-bold tabular-nums">{s.value}</p>
           </div>

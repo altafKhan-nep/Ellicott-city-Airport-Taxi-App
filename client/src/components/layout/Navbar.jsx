@@ -81,7 +81,7 @@ export default function Navbar() {
 
             {servicesOpen && (
               <div className="absolute left-1/2 top-full w-[560px] -translate-x-1/2 pt-2">
-                <div className="overflow-hidden rounded-2xl bg-white p-3 shadow-2xl ring-1 ring-slate-200">
+                <div className="overflow-hidden rounded-2xl bg-white p-3 shadow-2xl ring-1 ring-accent-200">
                   <div className="grid grid-cols-2 gap-1">
                     {SERVICES.map((s) => (
                       <button
@@ -99,7 +99,7 @@ export default function Navbar() {
                       </button>
                     ))}
                   </div>
-                  <div className="mt-1 border-t border-slate-100 pt-2">
+                  <div className="mt-1 border-t border-accent-100 pt-2">
                     <button
                       onClick={() => go('/services')}
                       className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold text-brand-700 transition-colors hover:bg-brand-50"

@@ -32,7 +32,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col px-4 py-12">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+      <div className="rounded-2xl border border-accent-200 bg-white p-8 shadow-sm">
         <h1 className="text-2xl font-bold">Forgot your password?</h1>
         <p className="mt-1 text-sm text-muted">
           Enter your account email and we'll send you a reset link.
@@ -40,12 +40,12 @@ export default function ForgotPassword() {
 
         {sent ? (
           <div className="mt-6 space-y-4">
-            <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+            <div className="rounded-xl border border-success-200 bg-success-50 px-4 py-3 text-sm text-success-800">
               If an account exists for <strong>{email}</strong>, a password reset link is on its way.
               It expires in 1 hour.
             </div>
             {devLink && (
-              <div className="rounded-xl bg-slate-50 px-4 py-3 text-sm">
+              <div className="rounded-xl bg-accent-50 px-4 py-3 text-sm">
                 <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted">
                   Development reset link
                 </p>
@@ -75,7 +75,7 @@ export default function ForgotPassword() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            {error && <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</p>}
+            {error && <p className="rounded-xl bg-signal-50 px-4 py-2.5 text-sm text-signal-700">{error}</p>}
             <Button type="submit" size="lg" loading={loading} className="w-full">
               Send reset link
             </Button>

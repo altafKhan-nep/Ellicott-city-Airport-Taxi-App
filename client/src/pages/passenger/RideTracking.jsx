@@ -212,7 +212,7 @@ export default function RideTracking() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Map */}
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:col-span-2">
+        <div className="overflow-hidden rounded-2xl border border-accent-200 bg-white shadow-sm lg:col-span-2">
           <div className="relative h-[480px]">
             <MapContainer
               center={driverPos ? [driverPos.lat, driverPos.lng] : [ride.pickup.lat, ride.pickup.lng]}
@@ -239,14 +239,14 @@ export default function RideTracking() {
                   />
                   <Polyline
                     positions={driverRoute.map((p) => [p.lat, p.lng])}
-                    pathOptions={{ color: '#c62828', weight: 5, opacity: 0.9, lineCap: 'round', dashArray: '8 10' }}
+                    pathOptions={{ color: '#c22020', weight: 5, opacity: 0.9, lineCap: 'round', dashArray: '8 10' }}
                   />
                 </>
               )}
               {driverRoute.length === 0 && route.length > 0 && (
                 <>
                   <Polyline positions={route.map((p) => [p.lat, p.lng])} pathOptions={{ color: '#ffffff', weight: 9, opacity: 0.7, lineCap: 'round' }} />
-                  <Polyline positions={route.map((p) => [p.lat, p.lng])} pathOptions={{ color: '#c62828', weight: 5, opacity: 0.9, lineCap: 'round' }} />
+                  <Polyline positions={route.map((p) => [p.lat, p.lng])} pathOptions={{ color: '#c22020', weight: 5, opacity: 0.9, lineCap: 'round' }} />
                 </>
               )}
             </MapContainer>
@@ -268,15 +268,15 @@ export default function RideTracking() {
 
         {/* Details panel */}
         <div className="space-y-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-accent-200 bg-white p-6 shadow-sm">
             <h2 className="text-lg font-bold">Trip details</h2>
 
             <div className="mt-4 space-y-4">
               <div className="flex gap-3">
                 <div className="flex flex-col items-center">
                   <span className="h-2.5 w-2.5 rounded-full bg-brand-600" />
-                  <span className="my-1 w-px flex-1 bg-slate-200" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-red-600" />
+                  <span className="my-1 w-px flex-1 bg-accent-200" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-signal-600" />
                 </div>
                 <div className="space-y-6 text-sm">
                   <div>
@@ -291,7 +291,7 @@ export default function RideTracking() {
               </div>
             </div>
 
-            <dl className="mt-6 space-y-2 border-t border-slate-100 pt-4 text-sm">
+            <dl className="mt-6 space-y-2 border-t border-accent-100 pt-4 text-sm">
               <div className="flex justify-between">
                 <dt className="text-muted">Vehicle</dt>
                 <dd className="font-medium">{vehicleLabel(ride.vehicleType)}</dd>
@@ -304,7 +304,7 @@ export default function RideTracking() {
                 <dt className="text-muted">Est. duration</dt>
                 <dd className="font-medium">{ride.fare.durationMin} min</dd>
               </div>
-              <div className="flex justify-between border-t border-slate-100 pt-2">
+              <div className="flex justify-between border-t border-accent-100 pt-2">
                 <dt className="font-medium">Estimated fare</dt>
                 <dd className="font-bold text-brand-700">
                   ${(ride.fare.estimated || 0).toFixed(2)}
@@ -326,7 +326,7 @@ export default function RideTracking() {
           )}
 
           {status === 'completed' && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="rounded-2xl border border-accent-200 bg-white p-5 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted">Trip total</p>
@@ -336,18 +336,18 @@ export default function RideTracking() {
                 </div>
                 {ride.payment?.status === 'paid' && (
                   <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                    ride.payment?.method === 'cash' ? 'bg-gold-100 text-gold-700' : 'bg-green-50 text-green-700'
+                    ride.payment?.method === 'cash' ? 'bg-gold-100 text-gold-700' : 'bg-success-50 text-success-700'
                   }`}>
                     {ride.payment?.method === 'cash' ? 'Cash' : 'Paid'}
                   </span>
                 )}
                 {ride.payment?.status === 'refunded' && (
-                  <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                  <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
                     Refunded
                   </span>
                 )}
                 {ride.payment?.status === 'pending' && (
-                  <span className="rounded-full bg-yellow-50 px-3 py-1 text-xs font-semibold text-yellow-700">
+                  <span className="rounded-full bg-gold-50 px-3 py-1 text-xs font-semibold text-gold-700">
                     Unpaid
                   </span>
                 )}

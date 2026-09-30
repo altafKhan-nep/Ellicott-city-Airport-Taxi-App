@@ -32,7 +32,7 @@ export default function VerifyEmail() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col px-4 py-12">
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+      <div className="rounded-2xl border border-accent-200 bg-white p-8 text-center shadow-sm">
         {state === 'verifying' && (
           <>
             <h1 className="text-2xl font-bold">Verifying your email…</h1>
@@ -42,7 +42,7 @@ export default function VerifyEmail() {
 
         {state === 'success' && (
           <>
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-700">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-success-100 text-success-700">
               <CheckCircle2 className="h-8 w-8" />
             </div>
             <h1 className="text-2xl font-bold">Email verified</h1>
@@ -59,7 +59,7 @@ export default function VerifyEmail() {
 
         {state === 'error' && (
           <>
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-2xl text-red-700">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-signal-100 text-2xl text-signal-700">
               !
             </div>
             <h1 className="text-2xl font-bold">Verification failed</h1>

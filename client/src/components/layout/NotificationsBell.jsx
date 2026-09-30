@@ -94,8 +94,8 @@ export default function NotificationsBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200">
-          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+        <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-accent-200">
+          <div className="flex items-center justify-between border-b border-accent-100 px-4 py-3">
             <p className="text-sm font-semibold">Notifications</p>
             {unread > 0 && (
               <button
@@ -118,7 +118,7 @@ export default function NotificationsBell() {
                 <button
                   key={n._id}
                   onClick={() => openItem(n)}
-                  className={`flex w-full gap-3 border-b border-slate-50 px-4 py-3 text-left transition-colors last:border-0 hover:bg-slate-50 ${
+                  className={`flex w-full gap-3 border-b border-accent-50 px-4 py-3 text-left transition-colors last:border-0 hover:bg-accent-50 ${
                     n.read ? 'opacity-70' : ''
                   }`}
                 >
@@ -134,7 +134,7 @@ export default function NotificationsBell() {
                       {!n.read && <span className="h-2 w-2 shrink-0 rounded-full bg-brand-600" />}
                     </span>
                     <span className="mt-0.5 line-clamp-2 block text-xs text-muted">{n.message}</span>
-                    <span className="mt-1 block text-[10px] text-slate-400">
+                    <span className="mt-1 block text-[10px] text-accent-400">
                       {new Date(n.createdAt).toLocaleString()}
                     </span>
                   </span>

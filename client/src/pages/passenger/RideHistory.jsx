@@ -8,18 +8,18 @@ import EditRideModal from '../../components/rides/EditRideModal.jsx';
 
 const STATUS_STYLE = {
   pending: 'bg-accent-50 text-accent-700',
-  accepted: 'bg-blue-50 text-blue-700',
-  arriving: 'bg-blue-50 text-blue-700',
+  accepted: 'bg-brand-50 text-brand-700',
+  arriving: 'bg-brand-50 text-brand-700',
   in_progress: 'bg-brand-50 text-brand-700',
   completed: 'bg-brand-50 text-brand-700',
-  cancelled: 'bg-slate-100 text-slate-500',
+  cancelled: 'bg-accent-100 text-accent-500',
 };
 
 const PAY_STYLE = {
-  paid: 'bg-green-50 text-green-700',
+  paid: 'bg-success-50 text-success-700',
   cash: 'bg-gold-100 text-gold-700',
-  refunded: 'bg-blue-50 text-blue-700',
-  pending: 'bg-yellow-50 text-yellow-700',
+  refunded: 'bg-brand-50 text-brand-700',
+  pending: 'bg-gold-50 text-gold-700',
 };
 
 export default function RideHistory() {
@@ -53,7 +53,7 @@ export default function RideHistory() {
       <p className="mt-1 text-sm text-muted">Past and upcoming trips.</p>
 
       {rides.length === 0 ? (
-        <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+        <div className="mt-8 rounded-2xl border border-dashed border-accent-300 bg-white p-12 text-center">
           <p className="text-muted">No rides yet.</p>
           <Link
             to="/"
@@ -67,7 +67,7 @@ export default function RideHistory() {
           {rides.map((r) => (
             <div
               key={r._id}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+              className="rounded-2xl border border-accent-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">

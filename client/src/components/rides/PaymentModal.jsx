@@ -144,13 +144,13 @@ export default function PaymentModal({ ride, onClose, onPaid }) {
                 </p>
               </div>
             ) : result.status === 'succeeded' ? (
-              <div className="rounded-xl bg-green-50 p-4 text-sm text-green-700">
+              <div className="rounded-xl bg-success-50 p-4 text-sm text-success-700">
                 <p className="font-semibold">Payment succeeded</p>
                 <p className="mt-1">Reference: {result.transactionId}</p>
                 <p className="mt-1">A receipt has been sent to your email.</p>
               </div>
             ) : (
-              <div className="rounded-xl bg-red-50 p-4 text-sm text-red-700">
+              <div className="rounded-xl bg-signal-50 p-4 text-sm text-signal-700">
                 <p className="font-semibold">Payment failed</p>
                 <p className="mt-1">{result.failureReason || 'Try a different card.'}</p>
               </div>
@@ -178,7 +178,7 @@ export default function PaymentModal({ ride, onClose, onPaid }) {
                     className={`flex flex-col items-start gap-1 rounded-2xl border px-4 py-3 text-left transition-all ${
                       active
                         ? 'border-brand-600 bg-brand-50 ring-2 ring-brand-200'
-                        : 'border-slate-200 bg-white hover:border-brand-300 hover:bg-brand-50/40'
+                        : 'border-accent-200 bg-white hover:border-brand-300 hover:bg-brand-50/40'
                     }`}
                   >
                     <span className={`flex items-center gap-1.5 font-semibold ${active ? 'text-brand-700' : 'text-ink'}`}>
@@ -191,11 +191,11 @@ export default function PaymentModal({ ride, onClose, onPaid }) {
               })}
             </div>
 
-            {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+            {error && <p className="mt-4 text-sm text-signal-600">{error}</p>}
 
             {method === 'cash' ? (
               <div className="mt-5">
-                <div className="rounded-xl bg-slate-50 p-4 text-sm text-ink">
+                <div className="rounded-xl bg-accent-50 p-4 text-sm text-ink">
                   <p className="font-semibold">Pay in cash</p>
                   <p className="mt-1 text-muted">
                     No card charge now. Keep the exact amount ready and pay your driver in cash
@@ -223,10 +223,10 @@ export default function PaymentModal({ ride, onClose, onPaid }) {
                       appearance: {
                         theme: 'stripe',
                         variables: {
-                          colorPrimary: '#d7332f',
+                          colorPrimary: '#0b60a9',
                           colorBackground: '#ffffff',
-                          colorText: '#0b0d0f',
-                          fontFamily: 'Inter, system-ui, sans-serif',
+                          colorText: '#333333',
+                          fontFamily: 'Raleway, system-ui, sans-serif',
                           spacingUnit: '3px',
                           borderRadius: '10px',
                           tabBorderRadius: '10px',
@@ -256,7 +256,7 @@ export default function PaymentModal({ ride, onClose, onPaid }) {
                     />
                   </Elements>
                 ) : null}
-                <p className="mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-slate-50 px-3 py-2 text-xs text-muted">
+                <p className="mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-accent-50 px-3 py-2 text-xs text-muted">
                   <Lock className="h-3.5 w-3.5 text-brand-600" />
                   Secured by Stripe · test mode — use 4242 4242 4242 4242
                 </p>
@@ -292,7 +292,7 @@ export default function PaymentModal({ ride, onClose, onPaid }) {
                     required
                   />
                 </div>
-                <p className="rounded-xl bg-slate-50 px-3 py-2 text-xs text-muted">
+                <p className="rounded-xl bg-accent-50 px-3 py-2 text-xs text-muted">
                   Sandbox checkout — no real charge. Cards ending in <b>0002</b> decline (for testing).
                 </p>
                 <div className="flex gap-2 pt-1">

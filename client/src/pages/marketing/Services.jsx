@@ -74,7 +74,7 @@ export default function Services() {
             <Reveal key={s.slug} delay={(i % 3) * 90} className="h-full">
               <Link
                 to={`/services/${s.slug}`}
-                className="card-lift group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-7 shadow-sm"
+                className="card-lift group relative flex h-full flex-col overflow-hidden rounded-3xl border border-accent-200 bg-white p-7 shadow-sm"
               >
                 <div className="absolute inset-x-0 top-0 h-1.5 bg-brand-gradient opacity-0 transition-opacity group-hover:opacity-100" />
                 <div className="flex items-start justify-between">
@@ -88,7 +88,7 @@ export default function Services() {
                 <h3 className="mt-5 text-lg font-bold text-ink">{s.name}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted">{s.summary}</p>
                 <div className="mt-5 flex-1" />
-                <span className="inline-flex items-center gap-1.5 border-t border-slate-100 pt-5 text-sm font-semibold text-brand-700">
+                <span className="inline-flex items-center gap-1.5 border-t border-accent-100 pt-5 text-sm font-semibold text-brand-700">
                   Learn more
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
                 </span>
@@ -117,7 +117,7 @@ export default function Services() {
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {PROMISES.map((p, i) => (
               <Reveal key={p.title} delay={i * 80} className="h-full">
-                <div className="card-lift h-full rounded-3xl border border-slate-200 bg-white p-7 text-center shadow-sm">
+                <div className="card-lift h-full rounded-3xl border border-accent-200 bg-white p-7 text-center shadow-sm">
                   <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-brand-gradient-soft">
                     <p.icon className="h-7 w-7 text-brand-700" />
                   </span>

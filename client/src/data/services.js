@@ -1,158 +1,204 @@
-import { Plane, Briefcase, Gem, PartyPopper, Bus, MoonStar, Heart, School, Car } from 'lucide-react';
-
+// Service offerings — OFFLINE FALLBACK only. The live source of truth is the
+// ServiceOffering collection an admin manages in /admin/content; this file is
+// what renders when `GET /api/services` is slow or unreachable, which is the
+// normal case on a deployed site that has not set VITE_API_URL.
+//
+// This list is a verbatim mirror of SERVICE_DEFAULTS in
+// server/src/services/catalogService.js — slug, name, short, icon NAME,
+// `featured`, tagline, summary and features all included.
+//
+// It has drifted before, in ways that were only visible in production:
+// `icon: ''` blanked every service icon and `featured: false` emptied the Home
+// featured band entirely (12 service links dropped to 7). Note `icon` is a
+// NAME string, not a component: `ServiceIcon` resolves it through
+// lib/iconMap.js, and rendering `<s.icon />` on a component value silently
+// produces a literal <s> element.
+//
+// `npm run check:catalog` diffs this file against the server defaults and
+// fails on any drift. Run it after editing either side.
 export const SERVICES = [
   {
     slug: 'airport',
     name: 'Airport Transfers',
     short: 'Airport',
-    icon: Plane,
-    tagline: 'BWI · Dulles · Reagan · Amtrak',
+    icon: 'plane',
+    featured: true,
+    tagline: 'BWI, DCA, IAD and beyond',
     summary:
-      'Skip the parking lots, long TSA lines and the final dash to your gate. Our professional drivers deliver prompt, meet-and-greet airport transfers to and from BWI, Dulles, Reagan National, Amtrak and MARC terminals — monitored around the clock for schedule changes.',
+      'Flight-tracked pickups, curbside meet-and-greet and a driver already waiting when your flight lands. We watch delays so a late flight never means a late ride.',
     features: [
-      'Flight tracking so we adapt to delays',
-      'Meet-and-greet service at arrivals',
-      'Round-trip and multi-stop itineraries',
-      'Flat, upfront pricing with no meter surprises',
+      'Real-time flight tracking',
+      'Free waiting time after delays',
+      'Meet-and-greet with name board',
+      'Terminal-to-terminal transfers',
+      'Luggage assistance',
+      'BWI, DCA and IAD covered',
     ],
   },
   {
     slug: 'corporate',
     name: 'Corporate Travel',
     short: 'Corporate',
-    icon: Briefcase,
-    tagline: 'Punctual, private, professional',
+    icon: 'briefcase',
+    featured: true,
+    tagline: 'A dedicated account for your team',
     summary:
-      'Tailored for corporate events, client meetings and frequent airport runs. Our fleet ensures punctuality, privacy and peace of mind — from live journey tracking to special requests, your business travel is fully covered.',
+      'Monthly invoicing, a named account manager and guaranteed vehicles for client meetings, site visits and team travel across the Mid-Atlantic.',
     features: [
-      'Corporate accounts with consolidated billing',
-      'Guaranteed on-time scheduling',
-      'Executive sedans and SUVs',
-      'Dedicated booking support',
+      'Centralised monthly billing',
+      'Named account manager',
+      'Guaranteed vehicle classes',
+      'Priority dispatch during peak',
+      'Booking portal for teams',
+      'Receipts itemised per traveller',
     ],
   },
   {
     slug: 'wedding',
     name: 'Wedding Transportation',
     short: 'Weddings',
-    icon: Gem,
-    tagline: 'From ceremony to happily ever after',
+    icon: 'gem',
+    featured: true,
+    tagline: 'Guests arrive on time, always',
     summary:
-      'From bachelor(ette) parties to rehearsal dinners to newlywed getaways, we handle it all. We will help you create a customized transportation plan from the very beginning all the way to happily ever after.',
+      'Block guest shuttles, package the wedding party timeline and keep the whole celebration moving with vehicles that photograph well.',
     features: [
-      'Custom itineraries for the whole wedding party',
-      'Champagne-ready luxury sedans and SUVs',
-      'Coordination across venues and timings',
-      'Elegant, uniformed chauffeurs',
+      'Guest block and itineraries',
+      'Wedding party packages',
+      'Decorated vehicles on request',
+      'Coordination with your venue',
+      'Late-night return trips',
+      'Second-event coverage',
     ],
   },
   {
     slug: 'prom',
     name: 'Prom & Celebrations',
     short: 'Proms',
-    icon: PartyPopper,
-    tagline: 'Style, safety and peace of mind',
+    icon: 'partyPopper',
+    featured: false,
+    tagline: 'The night everyone remembers',
     summary:
-      'Celebrate in style with our premium sedans and SUVs, perfect for an unforgettable prom night. Our state-certified, background-checked drivers ensure a safe, smooth ride for your teen — so you can relax.',
+      'Premium sedans and SUVs with chauffeurs who know how to make a formal occasion feel special, plus photo-friendly arrival timing.',
     features: [
-      'Safe, vetted drivers in uniform',
-      'On-time pickup and dropoff',
-      'Clean, modern vehicles',
-      'Flexible group arrangements',
+      'Premium and luxury classes',
+      'Dress-code-aware chauffeurs',
+      'Group pickup coordination',
+      'Photo-stop itineraries',
+      'Return trips after the event',
+      'Complimentary amenities',
     ],
   },
   {
     slug: 'shuttle',
     name: 'Employee & Corporate Shuttles',
     short: 'Shuttles',
-    icon: Bus,
-    tagline: 'Stress-free K-12 to college & work',
+    icon: 'bus',
+    featured: true,
+    tagline: 'Fixed routes, counted on daily',
     summary:
-      'Enjoy stress-free transportation for schools, sports teams and corporate commuters. We create tailored itineraries with vetted and certified drivers — ask about ongoing corporate shuttle contracts.',
+      'Recurring commuter routes, campus loops and shift shuttles run to the same timetable every day, with consolidated reporting.',
     features: [
-      'Custom routes and recurring schedules',
-      'Vetted, certified drivers',
-      'Live dispatch and tracking',
-      'Dependable morning and evening runs',
+      'Fixed daily timetables',
+      'Recurring booking schedules',
+      'Multiple vehicle classes',
+      'Passenger manifests',
+      'On-time performance reporting',
+      'Dedicated vehicles available',
     ],
   },
   {
     slug: 'charter',
     name: 'Charter Bus Trips',
     short: 'Charter Bus',
-    icon: Bus,
-    tagline: 'Groups of every size',
+    icon: 'bus',
+    featured: false,
+    tagline: 'Your itinerary, our vehicles',
     summary:
-      'Whether you are heading to the city for the day or on a longer group trip, our coordinators ensure everything runs seamlessly. Our network of trusted motorcoach partners handles groups of any size.',
+      'Day trips, multi-day tours and one-off group movement with drivers who stay with your group for the whole booking.',
     features: [
-      'Motorcoaches for up to 56 passengers',
-      'Group itineraries built by coordinators',
-      'Multi-day and multi-stop trips',
-      'Trusted, licensed operators',
+      'Motorcoach and mini-coach options',
+      'Multi-day and overnight trips',
+      'Custom itineraries',
+      'Restroom-equipped coaches',
+      'Baggage handling included',
+      'Flexible departure times',
     ],
   },
   {
     slug: 'night-out',
     name: 'Night Out',
     short: 'Night Out',
-    icon: MoonStar,
-    tagline: 'Birthdays, concerts & dinners',
+    icon: 'moonStar',
+    featured: true,
+    tagline: 'Safe rides, whatever the hour',
     summary:
-      'From birthday dinners to concerts, we have you covered. Let us turn your night on the town into a one-of-a-kind experience — connect with our coordinators for a night to remember.',
+      'Hourly packages and after-hours airport runs so the drive home is never the part of the evening you have to think about.',
     features: [
-      'Designated-driver convenience',
-      'Multi-stop evening itineraries',
-      'Punctual pickup and return',
-      'Courteous, professional drivers',
+      'Hourly and multi-hour packages',
+      'Late-night airport runs',
+      'Designated sober driver option',
+      'Vetted professional drivers',
+      'Pay by the hour or the trip',
+      'Event wait included',
     ],
   },
   {
     slug: 'funeral',
     name: 'Funeral & Memorial',
     short: 'Funerals',
-    icon: Heart,
-    tagline: 'Dignified, respectful service',
+    icon: 'heart',
+    featured: false,
+    tagline: 'Quiet, dignified transport',
     summary:
-      'Whether you are planning a private service or a large memorial, our team ensures every ride is handled with care. Trusted, professional drivers provide dignified, reliable transportation during life’s most difficult moments.',
+      'Compassionate, punctual vehicles for funeral transportation, memorial services and family arrivals, handled with discretion.',
     features: [
-      'Sensitive, discreet chauffeurs',
-      'Processions coordinated with your funeral home',
-      'Family and guest transport options',
-      'Quiet, dignified service',
+      'Dignified, unmarked vehicles',
+      'Family and clergy transport',
+      'Punctual arrival windows',
+      'Discreet, professional drivers',
+      'Waiting during services',
+      'Accessibility considered',
     ],
   },
   {
     slug: 'school',
     name: 'School Transportation',
     short: 'Schools',
-    icon: School,
-    tagline: 'Safe daily routes & field trips',
+    icon: 'school',
+    featured: false,
+    tagline: 'Contracted routes and field trips',
     summary:
-      'Ellicott City Airport Taxi provides safe, dependable transportation tailored for private schools. From daily AM and PM routes to field trips and special events, our professional drivers ensure students travel comfortably, securely and on schedule.',
+      'Contracted school routes, activity trips and campus shuttles with the documentation and reliability districts expect.',
     features: [
-      'Daily routes and activity buses',
-      'Background-checked, trained drivers',
-      'GPS-monitored journeys',
-      'Field trips and special events',
+      'Contracted route programmes',
+      'Field and activity trips',
+      'Campus circulation',
+      'Supervision-friendly seating',
+      'Documentation provided',
+      'Background-checked drivers',
     ],
   },
   {
     slug: 'valet',
     name: 'Valet Parking',
     short: 'Valet',
-    icon: Car,
-    tagline: 'Seamless events, effortless arrival',
+    icon: 'car',
+    featured: false,
+    tagline: 'Your car looked after, on return',
     summary:
-      'Our valet service ensures seamless events. Professional attendants prioritize efficiency and courtesy, adding a touch of sophistication to your gatherings — elevate your occasions with top-notch valet service.',
+      'Airport and venue valet services with attendants who take the vehicle, return it valeted, and handle the car park booking for you.',
     features: [
-      'Professional, uniformed attendants',
-      'Efficient and courteous service',
-      'Scalable for events of any size',
-      'Coordinated with your venue',
+      'Airport and venue valet',
+      'Car park booking handled',
+      'Attendants in uniform',
+      'Vehicle returned valeted',
+      'Oversized vehicle handling',
+      'Key custody receipt',
     ],
   },
 ];
 
-export const FEATURED_SERVICES = ['wedding', 'airport', 'shuttle', 'corporate', 'night-out'];
-
-export const getService = (slug) => SERVICES.find((s) => s.slug === slug);
+export const serviceLabel = (slug) =>
+  SERVICES.find((s) => s.slug === slug)?.name ||
+  (slug || '').replace(/-/g, ' ');

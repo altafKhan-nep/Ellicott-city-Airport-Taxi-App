@@ -146,7 +146,7 @@ export default function Profile() {
     }
   };
 
-  const formCard = 'rounded-2xl border border-slate-200 bg-white p-6 shadow-sm';
+  const formCard = 'rounded-2xl border border-accent-200 bg-white p-6 shadow-sm';
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
@@ -160,7 +160,7 @@ export default function Profile() {
             <img
               src={user.avatar}
               alt=""
-              className="h-24 w-24 rounded-full border border-slate-200 object-cover shadow-sm"
+              className="h-24 w-24 rounded-full border border-accent-200 object-cover shadow-sm"
             />
           ) : (
             <div className="grid h-24 w-24 place-items-center rounded-full bg-brand-50 text-3xl font-bold text-brand-700">
@@ -191,7 +191,7 @@ export default function Profile() {
         </div>
         <Input label="Email" value={user?.email || ''} disabled className="sm:max-w-md" />
         {saved && <p className="text-sm font-medium text-brand-700">Saved</p>}
-        {profileError && <p className="text-sm text-red-600">{profileError}</p>}
+        {profileError && <p className="text-sm text-signal-600">{profileError}</p>}
         <Button type="submit" loading={saving}>Save changes</Button>
       </form>
 
@@ -244,7 +244,7 @@ export default function Profile() {
         )}
       </div>
       {pwMsg.text && (
-        <p className={`mt-2 text-sm ${pwMsg.type === 'success' ? 'font-medium text-brand-700' : 'text-red-600'}`}>
+        <p className={`mt-2 text-sm ${pwMsg.type === 'success' ? 'font-medium text-brand-700' : 'text-signal-600'}`}>
           {pwMsg.text}
         </p>
       )}

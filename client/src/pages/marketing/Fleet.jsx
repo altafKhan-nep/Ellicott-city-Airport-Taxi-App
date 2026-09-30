@@ -117,7 +117,7 @@ export default function Fleet() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {FLEET.map((v, i) => (
             <Reveal key={v.name} delay={(i % 3) * 90}>
-              <div className="card-lift group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+              <div className="card-lift group flex h-full flex-col overflow-hidden rounded-3xl border border-accent-200 bg-white shadow-sm">
                 <div className="img-zoom relative bg-gradient-to-b from-brand-50 to-white">
                   <img
                     src={v.img}
@@ -149,7 +149,7 @@ export default function Fleet() {
                     </Link>
                     <a
                       href="tel:4103655556"
-                      className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 text-brand-700 transition-colors hover:border-brand-300 hover:bg-brand-50"
+                      className="grid h-11 w-11 place-items-center rounded-full border border-accent-200 text-brand-700 transition-colors hover:border-brand-300 hover:bg-brand-50"
                       aria-label={`Call about ${v.name}`}
                     >
                       <Phone className="h-4 w-4" />

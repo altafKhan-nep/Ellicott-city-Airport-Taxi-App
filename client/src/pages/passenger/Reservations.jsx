@@ -125,8 +125,8 @@ export default function Reservations() {
 
       {/* Geolocation notice */}
       {geoError && (
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
-          <p className="text-sm text-amber-800">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gold-200 bg-gold-50 px-4 py-3">
+          <p className="text-sm text-gold-800">
             We couldn't access your location{geoError ? ` (${geoError})` : ''} — the map is
             showing a default area.
           </p>
@@ -141,10 +141,10 @@ export default function Reservations() {
       )}
 
       {/* Booking card */}
-      <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <section className="overflow-hidden rounded-3xl border border-accent-200 bg-white shadow-sm">
         <div className="grid lg:grid-cols-5">
           {/* Form */}
-          <div className="border-slate-200 lg:col-span-2 lg:border-r">
+          <div className="border-accent-200 lg:col-span-2 lg:border-r">
             <BookingForm
               pickup={pickup}
               dropoff={dropoff}
@@ -178,7 +178,7 @@ export default function Reservations() {
         </div>
 
         {/* Nearby drivers strip */}
-        <div className="border-t border-slate-200 bg-slate-50/60 px-6 py-5">
+        <div className="border-t border-accent-200 bg-accent-50/60 px-6 py-5">
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-ink">
               {pickup ? 'Drivers near your pickup' : 'Drivers in the area'}
@@ -206,7 +206,7 @@ export default function Reservations() {
                   className={`flex items-center gap-3 rounded-2xl border bg-white p-3 text-left transition-all ${
                     selectedDriver?._id === d._id
                       ? 'border-brand-500 ring-2 ring-brand-200'
-                      : 'border-slate-200 hover:border-brand-300'
+                      : 'border-accent-200 hover:border-brand-300'
                   }`}
                 >
                   <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 text-brand-700">

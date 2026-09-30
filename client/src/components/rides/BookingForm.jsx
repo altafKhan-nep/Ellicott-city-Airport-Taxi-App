@@ -72,7 +72,7 @@ export default function BookingForm({ pickup, dropoff, onPickupChange, onDropoff
   };
 
   const field =
-    'input-pill w-full border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition-colors placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200';
+    'input-pill w-full border border-accent-300 bg-white px-4 py-3 text-sm outline-none transition-colors placeholder:text-accent-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200';
 
   return (
     <form onSubmit={submit} className="flex h-full flex-col gap-5 p-6">
@@ -82,7 +82,7 @@ export default function BookingForm({ pickup, dropoff, onPickupChange, onDropoff
       </div>
 
       {/* When */}
-      <div className="grid grid-cols-2 gap-1 rounded-full bg-slate-100 p-1">
+      <div className="grid grid-cols-2 gap-1 rounded-full bg-accent-100 p-1">
         {['now', 'later'].map((w) => (
           <button
             key={w}
@@ -200,7 +200,7 @@ export default function BookingForm({ pickup, dropoff, onPickupChange, onDropoff
         onChange={(e) => setExtra(e.target.value)}
       />
 
-      {error && <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">{error}</p>}
+      {error && <p className="rounded-xl bg-signal-50 px-4 py-2.5 text-sm text-signal-700">{error}</p>}
 
       {/* Sticky CTA on mobile, in-flow on desktop */}
       <div className="sticky bottom-0 -mx-6 -mb-6 mt-auto bg-white/90 px-6 pb-6 pt-3 backdrop-blur lg:static lg:bg-transparent lg:p-0">
