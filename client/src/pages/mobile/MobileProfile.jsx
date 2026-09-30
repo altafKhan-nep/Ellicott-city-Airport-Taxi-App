@@ -36,9 +36,9 @@ export default function MobileProfile() {
 
   if (!user) {
     return (
-      <div className="px-4 pt-5">
+      <div className="px-[var(--m-gutter)] pt-5">
         <ScreenTitle>Profile</ScreenTitle>
-        <Card className="px-6 py-10 text-center">
+        <Card className="p-[var(--m-card-pad)] py-10 text-center">
           <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-brand-50 text-brand-700">
             <LogIn className="h-6 w-6" />
           </span>
@@ -60,7 +60,7 @@ export default function MobileProfile() {
   }
 
   return (
-    <div className="px-4 pt-5">
+    <div className="px-[var(--m-gutter)] pt-5">
       <ScreenTitle>Profile</ScreenTitle>
 
       {/* Identity */}

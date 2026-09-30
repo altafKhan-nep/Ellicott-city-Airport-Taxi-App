@@ -39,7 +39,7 @@ function RideRow({ ride }) {
     <li>
       <Link
         to={`/rides/track/${ride._id}`}
-        className="r-card flex items-center gap-3 border border-accent-200 bg-surface p-3.5 shadow-[var(--m-shadow-card)] active:bg-accent-50"
+        className="r-card flex items-center gap-3 bg-surface p-3.5 shadow-[var(--m-shadow-card)] active:bg-accent-50"
       >
         <span className="min-w-0 flex-1">
           <span className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export default function MobileTrips() {
 
   if (!user) {
     return (
-      <div className="px-4 pt-5">
+      <div className="px-[var(--m-gutter)] pt-5">
         <ScreenTitle>Your trips</ScreenTitle>
         <EmptyState
           icon={LogIn}
@@ -118,7 +118,7 @@ export default function MobileTrips() {
 
   if (rides === null) {
     return (
-      <div className="px-4 pt-5">
+      <div className="px-[var(--m-gutter)] pt-5">
         <ScreenTitle>Your trips</ScreenTitle>
         <ListSkeleton rows={4} />
       </div>
@@ -129,7 +129,7 @@ export default function MobileTrips() {
   const past = rides.filter((r) => !ACTIVE.includes(r.status));
 
   return (
-    <div className="px-4 pt-5">
+    <div className="px-[var(--m-gutter)] pt-5">
       <ScreenTitle>Your trips</ScreenTitle>
 
       {rides.length === 0 ? (

@@ -218,8 +218,16 @@ h2 {
 /* ---- Mobile surface + type scale -------------------------------------------
    One radius ladder and one shadow ladder for the whole phone UI, so cards on
    different screens read as the same material. Before this, seven files used
-   five different radii and eight different text sizes. */
+   five different radii and eight different text sizes.
+
+   Cards are shadow-only, never bordered. A 1px border inside a 16px gutter put
+   card content at 17px while section labels sat at exactly 16px — a 1px
+   difference that reads as "off" without anyone being able to say why. */
 :root {
+  --m-gutter: 1rem;
+  --m-gap: 0.75rem;
+  --m-card-pad: 1rem;
+
   --m-radius-card: 1.25rem;
   --m-radius-inner: 0.875rem;
   --m-radius-pill: 9999px;
@@ -227,6 +235,11 @@ h2 {
   --m-shadow-card: 0 1px 2px rgb(26 29 33 / 0.04), 0 8px 24px -16px rgb(26 29 33 / 0.18);
   --m-shadow-float: 0 2px 6px rgb(26 29 33 / 0.08), 0 18px 40px -20px rgb(26 29 33 / 0.28);
   --m-shadow-brand: 0 2px 6px rgb(4 32 58 / 0.18), 0 16px 36px -18px rgb(8 66 116 / 0.55);
+}
+
+/* Vertical rhythm for the scrolling column. */
+.stack > * + * {
+  margin-top: var(--m-gap);
 }
 
 .r-card {

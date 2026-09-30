@@ -13,7 +13,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import { VEHICLES } from '../../data/vehicles.js';
 import { SERVICES } from '../../data/services.js';
 import { estimateQuote, formatMoney } from '../../lib/quote.js';
-import { Card, SectionTitle, Stepper, PrimaryButton, StatusPill } from '../../components/mobile/MobileUI.jsx';
+import { Card, SectionBar, Stepper, PrimaryButton, StatusPill } from '../../components/mobile/MobileUI.jsx';
 
 const DEFAULT_CENTER = [39.267, -76.799];
 
@@ -170,9 +170,9 @@ export default function MobileBook() {
         </div>
       )}
 
-      <div className="space-y-4 px-4 py-4">
+      <div className="stack px-[var(--m-gutter)] py-4">
         {/* Locations */}
-        <Card className="space-y-3 p-4">
+        <Card className="space-y-3 p-[var(--m-card-pad)]">
           <LocationSearch
             label="Pickup"
             icon={MapPin}
@@ -226,8 +226,8 @@ export default function MobileBook() {
 
         {/* Vehicle — a photo carousel beats a 9-item grid */}
         <div>
-          <SectionTitle>Vehicle</SectionTitle>
-          <div className="scroll-x -mx-4 px-4">
+          <SectionBar>Vehicle</SectionBar>
+          <div className="scroll-x -mx-[var(--m-gutter)] px-[var(--m-gutter)]">
             {VEHICLES.map((v) => {
               const on = vehicleType === v.id;
               return (
@@ -244,12 +244,19 @@ export default function MobileBook() {
                       : 'border-accent-200 bg-surface'
                   }`}
                 >
-                  {v.image ? (
+                  {v.thumb || v.image ? (
+                    /* The full fleet photos are 250KB-1.6MB each and ship in the
+                       APK; at 80px tall in this carousel that is 6.5MB of
+                       waste, so the carousel loads 25KB thumbnails. The Fleet
+                       page still uses the full image. */
                     <img
-                      src={v.image}
+                      src={v.thumb || v.image}
                       alt=""
                       loading="lazy"
-                      className={`h-20 w-full object-cover ${on ? '' : 'opacity-90'}`}
+                      decoding="async"
+                      width={480}
+                      height={270}
+                      className={`h-20 w-full bg-accent-100 object-cover ${on ? '' : 'opacity-90'}`}
                     />
                   ) : (
                     <span className="grid h-20 w-full place-items-center bg-accent-100 text-muted">
@@ -270,32 +277,41 @@ export default function MobileBook() {
           </div>
         </div>
 
-        {/* Service — compact chips, not 128px cards */}
-        <div>
-          <SectionTitle>Service</SectionTitle>
-          <div className="scroll-x -mx-4 px-4">
+        {/* Service: equal-width columns in one scrolling row. A 2-up grid
+            aligned cleanly but stacked 10 services into 5 rows and pushed the
+            page past 1000px; a free-width scroller was ragged because the
+            labels run 132-223px wide. Fixed columns solve both. */}
+        <section>
+          <SectionBar>Service</SectionBar>
+          <div className="scroll-x mt-2 -mx-[var(--m-gutter)] px-[var(--m-gutter)]">
             {SERVICES.map((s) => {
               const on = serviceType === s.slug;
+              const Icon = s.icon;
               return (
                 <button
                   key={s.slug}
                   type="button"
                   onClick={() => setServiceType(s.slug)}
-                  className={`rounded-full border px-3.5 py-2 text-[13px] font-semibold transition-colors ${
+                  className={`flex h-[4.5rem] w-36 flex-col items-start gap-1.5 rounded-[var(--m-radius-inner)] px-3 py-2.5 text-left transition-colors ${
                     on
-                      ? 'border-brand-500 bg-brand-50 text-brand-700'
-                      : 'border-accent-200 bg-surface text-ink active:bg-accent-50'
+                      ? 'bg-brand-50 ring-2 ring-brand-200'
+                      : 'bg-surface shadow-[var(--m-shadow-card)] active:bg-accent-50'
                   }`}
                 >
-                  {s.name}
+                  {Icon && (
+                    <Icon className={`h-4 w-4 shrink-0 ${on ? 'text-brand-700' : 'text-muted'}`} />
+                  )}
+                  <span className="line-clamp-2 text-[12px] font-semibold leading-tight text-ink">
+                    {s.name}
+                  </span>
                 </button>
               );
             })}
           </div>
-        </div>
+        </section>
 
         {/* Counts */}
-        <Card className="space-y-4 p-4">
+        <Card className="space-y-4 p-[var(--m-card-pad)]">
           <Stepper
             label="Riders"
             value={passengerCount}

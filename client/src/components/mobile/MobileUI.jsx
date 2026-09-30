@@ -11,10 +11,12 @@ import { Link } from 'react-router-dom';
 /* ---- Surfaces ------------------------------------------------------------ */
 
 export function Card({ as: Tag = 'section', tone = 'plain', className = '', children, ...rest }) {
+  // Shadow-only, no 1px border: inside a 16px gutter a border shifted card
+  // content to 17px and left it 1px out of line with every section label.
   const tones = {
-    plain: 'bg-surface border border-accent-200',
+    plain: 'bg-surface',
     brand: 'bg-brand-gradient text-white',
-    quiet: 'bg-accent-50 border border-accent-200',
+    quiet: 'bg-accent-50',
   };
   return (
     <Tag className={`r-card ${tones[tone]} ${className}`} {...rest}>
@@ -26,6 +28,23 @@ export function Card({ as: Tag = 'section', tone = 'plain', className = '', chil
 export function SectionTitle({ children, action }) {
   return (
     <div className="mb-2 flex items-baseline justify-between gap-3">
+      <h2 className="t-label">{children}</h2>
+      {action}
+    </div>
+  );
+}
+
+/**
+ * A section header for the scrolling column.
+ *
+ * It deliberately does NOT apply the page gutter: every caller already lives
+ * inside the column's `px-[var(--m-gutter)]`, so adding it again put the label
+ * at 32px — flush with card *content* instead of with the card *edges* at 16px.
+ * The label and the card outline are supposed to share a left edge.
+ */
+export function SectionBar({ children, action }) {
+  return (
+    <div className="flex items-baseline justify-between gap-3">
       <h2 className="t-label">{children}</h2>
       {action}
     </div>

@@ -259,7 +259,7 @@ export default function MobileTrack() {
           <ChevronUp className={`mt-1.5 h-4 w-4 text-muted transition-transform ${expanded ? '' : 'rotate-180'}`} />
         </button>
 
-        <div className="space-y-4 px-4 pt-1 pb-8">
+        <div className="space-y-4 px-[var(--m-gutter)] pt-1 pb-8">
           {/* Driver */}
           {driver ? (
             <div className="flex items-center gap-3">
@@ -289,7 +289,7 @@ export default function MobileTrack() {
               </button>
             </div>
           ) : (
-            <Card tone="quiet" className="flex items-center gap-3 p-4">
+            <Card tone="quiet" className="flex items-center gap-3 p-[var(--m-card-pad)]">
               <span className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-signal-500" />
               <span className="text-sm text-ink">Matching you with a nearby driver…</span>
             </Card>
@@ -317,7 +317,7 @@ export default function MobileTrack() {
 
           {expanded && (
             <Card className="divide-y divide-accent-100">
-              <div className="flex gap-3 p-4">
+              <div className="flex gap-3 p-[var(--m-card-pad)]">
                 <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-success-50 text-success-700">
                   <MapPin className="h-3.5 w-3.5" />
                 </span>
@@ -328,7 +328,7 @@ export default function MobileTrack() {
                   </span>
                 </span>
               </div>
-              <div className="flex gap-3 p-4">
+              <div className="flex gap-3 p-[var(--m-card-pad)]">
                 <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-700">
                   <Navigation className="h-3.5 w-3.5" />
                 </span>
@@ -344,7 +344,7 @@ export default function MobileTrack() {
 
           {/* The fare is always visible — it should never need a tap. */}
           {ride.fare && (
-            <Card className="flex items-center justify-between p-4">
+            <Card className="flex items-center justify-between p-[var(--m-card-pad)]">
               <span className="text-sm text-muted">
                 {ride.fare.distanceKm ? `${ride.fare.distanceKm.toFixed(1)} km` : ''}
                 {ride.fare.durationMin ? ` · ${ride.fare.durationMin} min` : ''}
@@ -361,7 +361,7 @@ export default function MobileTrack() {
 
           {/* Rating */}
           {ride.status === 'completed' && (
-            <Card className="p-4">
+            <Card className="p-[var(--m-card-pad)]">
               <p className="t-label">Rate your trip</p>
               <div className="mt-2.5 flex items-center gap-1.5">
                 {[1, 2, 3, 4, 5].map((n) => (
@@ -388,7 +388,7 @@ export default function MobileTrack() {
           {/* Cancel — confirm before firing, and actually calls the API */}
           {['pending', 'accepted', 'arriving'].includes(ride.status) &&
             (confirmCancel ? (
-              <Card className="space-y-3 p-4">
+              <Card className="space-y-3 p-[var(--m-card-pad)]">
                 <p className="text-sm font-semibold text-ink">Cancel this ride?</p>
                 <div className="flex gap-2">
                   <button
