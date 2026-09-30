@@ -103,35 +103,46 @@ export default function MobileHome() {
           </Link>
         )}
 
-        {/* The one primary action on the screen. */}
+        {/* The one primary action on the screen.
+
+            The route spine is a flex child, not an absolutely-positioned rule
+            with hardcoded offsets. The previous version pinned it with
+            `top-9` / `left-[19px]` / `h-[calc(100%-4.5rem)]`, which measured
+            22px inside the pickup row and stopped 4px short of the drop off
+            row — it did not actually join the two dots. Here both columns are
+            flex children of the same row, so the spine is always exactly the
+            gap between them and the dots can never drift out of line. */}
         <Link to="/reservations" className="block active:opacity-95">
-          <Card className="p-[var(--m-card-pad)]">
-            <div className="relative space-y-2">
-              {/* The route spine: one dot per end, joined by a dashed rail that
-                  is pinned to the icons' centre line so it reads as one path. */}
-              <span
-                aria-hidden="true"
-                className="absolute left-[19px] top-9 h-[calc(100%-4.5rem)] w-px -translate-y-1/2 border-l-2 border-dashed border-accent-200"
-              />
-              <div className="relative flex items-center gap-3">
-                <span className="z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-success-50 text-success-700">
+          <Card className="overflow-hidden p-0">
+            <div className="flex gap-3 p-[var(--m-card-pad)] pb-3">
+              <span className="flex w-10 shrink-0 flex-col items-center">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-success-50 text-success-700">
                   <MapPin className="h-[18px] w-[18px]" />
                 </span>
-                <span className="r-inner flex-1 bg-accent-50 px-4 py-3 text-[15px] text-muted">
-                  Pickup
-                </span>
-              </div>
-              <div className="relative flex items-center gap-3">
-                <span className="z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-700">
+                {/* No vertical margin here: `my-*` would be taken out of the
+                    flex space and collapsed the rail to a 2px hairline. The
+                    rail is simply whatever is left between the two dots. */}
+                <span
+                  aria-hidden="true"
+                  className="w-0 flex-1 border-l-2 border-dashed border-accent-300"
+                />
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-700">
                   <Flag className="h-[18px] w-[18px]" />
                 </span>
-                <span className="r-inner flex-1 bg-accent-50 px-4 py-3 text-[15px] text-muted">
+              </span>
+
+              <span className="flex flex-1 flex-col justify-center gap-2.5">
+                <span className="flex h-10 items-center rounded-[var(--m-radius-inner)] bg-accent-50 px-3.5 text-[15px] text-muted">
+                  Pickup
+                </span>
+                <span className="flex h-10 items-center rounded-[var(--m-radius-inner)] bg-accent-50 px-3.5 text-[15px] text-muted">
                   Drop off
                 </span>
-              </div>
+              </span>
             </div>
 
-            <span className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-brand-gradient py-4 text-[15px] font-bold text-white shadow-[var(--m-shadow-brand)]">
+            {/* Full-bleed so the card reads as one object with one action. */}
+            <span className="flex w-full items-center justify-center gap-2 bg-brand-gradient py-4 text-[15px] font-bold text-white">
               Book a ride
               <ArrowRight className="h-4 w-4" />
             </span>

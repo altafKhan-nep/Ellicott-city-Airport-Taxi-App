@@ -170,7 +170,11 @@ export default function MobileBook() {
         </div>
       )}
 
-      <div className="stack px-[var(--m-gutter)] py-4">
+      {/* Two rhythms, not one flat gap: --m-gap-section between independent
+          steps of the form, --m-gap between things that belong together. A
+          uniform 12px everywhere gave every element equal weight, so nothing
+          read as more important than anything else. */}
+      <div className="space-y-[var(--m-gap-section)] px-[var(--m-gutter)] py-4">
         {/* Locations */}
         <Card className="space-y-3 p-[var(--m-card-pad)]">
           <LocationSearch
@@ -215,7 +219,7 @@ export default function MobileBook() {
         </Card>
 
         {driverCount !== null && (
-          <div className="flex justify-center">
+          <div className="-mt-1 flex justify-center">
             <StatusPill tone={driverCount > 0 ? 'brand' : 'wait'} pulse={driverCount > 0}>
               {driverCount > 0
                 ? `${driverCount} driver${driverCount === 1 ? '' : 's'} nearby`
@@ -310,26 +314,39 @@ export default function MobileBook() {
           </div>
         </section>
 
-        {/* Counts */}
-        <Card className="space-y-4 p-[var(--m-card-pad)]">
-          <Stepper
-            label="Riders"
-            value={passengerCount}
-            min={1}
-            max={seatCap}
-            onChange={setPassengerCount}
-          />
-          <div className="h-px bg-accent-100" />
-          <Stepper label="Bags" value={bags} min={0} max={6} onChange={setBags} />
-        </Card>
-
-        <input
-          value={extra}
-          onChange={(e) => setExtra(e.target.value)}
-          placeholder="Notes for the driver (optional)"
-          aria-label="Notes for the driver"
-          className="input-pill w-full border border-accent-200 bg-surface px-4 py-3.5 text-[15px] outline-none placeholder:text-accent-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-200"
-        />
+        {/* Extras — the things a rider adjusts last, so they read as one group
+            rather than three competing blocks. */}
+        <section>
+          <SectionBar>Trip details</SectionBar>
+          <Card className="mt-2 divide-y divide-accent-100">
+            {/* Single-line controls get horizontal padding only; padding both
+                ways pushed this block from 137px to 248px. */}
+            <div className="px-[var(--m-card-pad)] py-3">
+              <Stepper
+                label="Riders"
+                value={passengerCount}
+                min={1}
+                max={seatCap}
+                onChange={setPassengerCount}
+              />
+            </div>
+            <div className="px-[var(--m-card-pad)] py-3">
+              <Stepper label="Bags" value={bags} min={0} max={6} onChange={setBags} />
+            </div>
+            <div className="px-[var(--m-card-pad)] py-3">
+              <label className="t-label" htmlFor="ride-notes">
+                Note for the driver
+              </label>
+              <input
+                id="ride-notes"
+                value={extra}
+                onChange={(e) => setExtra(e.target.value)}
+                placeholder="Child seat, luggage, wheelchair…"
+                className="mt-1 w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-accent-400"
+              />
+            </div>
+          </Card>
+        </section>
 
         {error && (
           <p className="rounded-xl bg-signal-50 px-4 py-3 text-sm text-signal-700">{error}</p>

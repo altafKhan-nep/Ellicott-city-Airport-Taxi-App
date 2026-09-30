@@ -226,6 +226,7 @@ h2 {
 :root {
   --m-gutter: 1rem;
   --m-gap: 0.75rem;
+  --m-gap-section: 1.25rem;
   --m-card-pad: 1rem;
 
   --m-radius-card: 1.25rem;
