@@ -1,6 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, Flag, ArrowRight, Clock, Plane, LogIn, History } from 'lucide-react';
+import {
+  MapPin,
+  Flag,
+  ArrowRight,
+  ChevronRight,
+  Clock,
+  Plane,
+  LogIn,
+  History,
+  ShieldCheck,
+} from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { listRides } from '../../services/rideService.js';
 import { SERVICES } from '../../data/services.js';
@@ -16,6 +26,19 @@ const PAGES = [
   { to: '/services', label: 'Services' },
   { to: '/contact', label: 'Contact' },
 ];
+
+/** Field row height for the pickup/drop-off pair. A field carries a small-caps
+    label plus a value, so it is taller than its 40px dot. */
+const BAND = 60;
+
+/** The dot sits in a shorter band than its field, and the rail takes up the
+    remainder. 50 + rail + 50 must equal 60 + 10 + 60, so the rail is exactly
+    the space between the two dots instead of floating in the middle of a gap
+    twice its length. */
+const DOT_BAND = 50;
+
+/** Reassurance: the two things a rider worries about before trusting a ride app. */
+const ASSURANCES = ['Licensed & insured', 'Cash accepted', 'Available 24/7'];
 
 const greet = () => {
   const h = new Date().getHours();
@@ -103,51 +126,82 @@ export default function MobileHome() {
           </Link>
         )}
 
-        {/* The one primary action on the screen.
+        {/* ---- The one primary action on the screen ----------------------------
 
-            The route spine is a flex child, not an absolutely-positioned rule
-            with hardcoded offsets. The previous version pinned it with
-            `top-9` / `left-[19px]` / `h-[calc(100%-4.5rem)]`, which measured
-            22px inside the pickup row and stopped 4px short of the drop off
-            row — it did not actually join the two dots. Here both columns are
-            flex children of the same row, so the spine is always exactly the
-            gap between them and the dots can never drift out of line. */}
-        <Link to="/reservations" className="block active:opacity-95">
-          <Card className="overflow-hidden p-0">
-            <div className="flex gap-3 p-[var(--m-card-pad)] pb-3">
-              <span className="flex w-10 shrink-0 flex-col items-center">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-success-50 text-success-700">
+            Built as a real "Where to?" entry rather than two grey placeholders:
+            each row carries a small-caps label, a value line and its own
+            affordance, so it reads as something you interact with here. The
+            route rail is a flex child between the two dots, so it is always
+            exactly the gap between them and shares their centre line — an
+            earlier absolutely-positioned version with hardcoded offsets
+            floated 22px inside the pickup row and never reached the second dot.
+
+            Row height is pinned to BAND so the two columns are guaranteed to be
+            the same height and the rail cannot drift at any text size. */}
+        <Card className="overflow-hidden p-0">
+          <div className="flex gap-3 p-[var(--m-card-pad)]">
+            <span aria-hidden="true" className="flex w-10 shrink-0 flex-col items-center">
+              <span className="flex items-center" style={{ height: DOT_BAND }}>
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-success-50 text-success-700">
                   <MapPin className="h-[18px] w-[18px]" />
                 </span>
-                {/* No vertical margin here: `my-*` would be taken out of the
-                    flex space and collapsed the rail to a 2px hairline. The
-                    rail is simply whatever is left between the two dots. */}
-                <span
-                  aria-hidden="true"
-                  className="w-0 flex-1 border-l-2 border-dashed border-accent-300"
-                />
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-50 text-brand-700">
+              </span>
+              {/* The rail sits BETWEEN the dots, so it is simply whatever flex
+                  space is left over. No margin: `my-*` would be taken out of
+                  that space and collapse the rail to a 2px hairline. */}
+              <span className="w-0 flex-1 border-l-2 border-dashed border-accent-300" />
+              <span className="flex items-center" style={{ height: DOT_BAND }}>
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-50 text-brand-700">
                   <Flag className="h-[18px] w-[18px]" />
                 </span>
               </span>
-
-              <span className="flex flex-1 flex-col justify-center gap-2.5">
-                <span className="flex h-10 items-center rounded-[var(--m-radius-inner)] bg-accent-50 px-3.5 text-[15px] text-muted">
-                  Pickup
-                </span>
-                <span className="flex h-10 items-center rounded-[var(--m-radius-inner)] bg-accent-50 px-3.5 text-[15px] text-muted">
-                  Drop off
-                </span>
-              </span>
-            </div>
-
-            {/* Full-bleed so the card reads as one object with one action. */}
-            <span className="flex w-full items-center justify-center gap-2 bg-brand-gradient py-4 text-[15px] font-bold text-white">
-              Book a ride
-              <ArrowRight className="h-4 w-4" />
             </span>
-          </Card>
-        </Link>
+
+            <span className="flex flex-1 flex-col gap-2.5">
+              {[
+                { label: 'Pickup', hint: 'Where are you now?', icon: 'pickup' },
+                { label: 'Drop off', hint: 'Where to?', icon: 'dropoff' },
+              ].map((f) => (
+                <span
+                  key={f.label}
+                  className="flex items-center justify-between gap-2 rounded-[var(--m-radius-inner)] bg-accent-50 px-3.5"
+                  style={{ height: BAND }}
+                >
+                  <span className="min-w-0">
+                    <span className="block text-[10px] font-bold uppercase tracking-[0.08em] text-muted">
+                      {f.label}
+                    </span>
+                    <span className="mt-0.5 block truncate text-[15px] font-semibold text-ink">
+                      {f.hint}
+                    </span>
+                  </span>
+                  <ChevronRight className="h-4 w-4 shrink-0 text-accent-400" />
+                </span>
+              ))}
+            </span>
+          </div>
+
+          {/* Full-bleed so the card reads as one object with one action. */}
+          <Link
+            to="/reservations"
+            className="flex w-full items-center justify-center gap-2 bg-brand-gradient py-4 text-[15px] font-bold text-white transition-transform active:scale-[0.99]"
+          >
+            Book a ride
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Card>
+
+        {/* Answers the two questions a rider has before trusting an app: will
+            this actually happen, and can I pay the way I want to. */}
+        <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] font-medium text-muted">
+          {ASSURANCES.map((a, i) => (
+            <span key={a} className="flex items-center gap-1">
+              {i > 0 && <span className="text-accent-300">·</span>}
+              <ShieldCheck className="h-3 w-3 text-success-600" />
+              {a}
+            </span>
+          ))}
+        </p>
 
         {/* Real places from this passenger's own history. */}
         {recents.length > 0 && (
@@ -156,7 +210,7 @@ export default function MobileHome() {
               action={
                 <span className="flex items-center gap-1 text-[11px] font-semibold text-muted">
                   <History className="h-3 w-3" />
-                  Recent
+                  Recent · sets pickup
                 </span>
               }
             >

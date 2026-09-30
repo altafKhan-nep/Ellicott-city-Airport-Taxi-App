@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Flag, Crosshair, ChevronDown, Car } from 'lucide-react';
+import {
+  MapPin,
+  Flag,
+  Crosshair,
+  ChevronDown,
+  Car,
+  ArrowUpDown,
+} from 'lucide-react';
 import { BookingMap } from '../../components/maps/BookingMap.jsx';
 import LocationSearch from '../../components/rides/LocationSearch.jsx';
 import useGeolocation from '../../hooks/useGeolocation.js';
@@ -175,15 +182,31 @@ export default function MobileBook() {
           uniform 12px everywhere gave every element equal weight, so nothing
           read as more important than anything else. */}
       <div className="space-y-[var(--m-gap-section)] px-[var(--m-gutter)] py-4">
-        {/* Locations */}
-        <Card className="space-y-3 p-[var(--m-card-pad)]">
-          <LocationSearch
-            label="Pickup"
-            icon={MapPin}
-            placeholder="Search pickup address"
-            value={pickup}
-            onSelect={setPickup}
-          />
+        {/* Locations — swap lives here, not on the home shortcut, because this
+            is where both ends actually hold values. */}
+        <Card className="p-[var(--m-card-pad)]">
+          <div className="relative">
+            <LocationSearch
+              label="Pickup"
+              icon={MapPin}
+              placeholder="Search pickup address"
+              value={pickup}
+              onSelect={setPickup}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setPickup(dropoff);
+                setDropoff(pickup);
+              }}
+              disabled={!pickup || !dropoff}
+              aria-label="Swap pickup and drop off"
+              className="absolute right-3 top-[2.15rem] z-[1200] grid h-8 w-8 place-items-center rounded-full bg-surface text-brand-700 shadow-sm ring-1 ring-accent-200 transition-transform active:scale-90 disabled:opacity-40"
+            >
+              <ArrowUpDown className="h-4 w-4" />
+            </button>
+          </div>
+
           <div className="ml-5 h-2.5 border-l-2 border-dashed border-accent-200" />
           <LocationSearch
             label="Drop off"
