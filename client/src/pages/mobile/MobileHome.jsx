@@ -14,19 +14,12 @@ import {
 import { useAuth } from '../../context/AuthContext.jsx';
 import { listRides } from '../../services/rideService.js';
 import { SERVICES } from '../../data/services.js';
-import { vehicleLabel } from '../../data/vehicles.js';
 import { Card, SectionBar, StatusPill } from '../../components/mobile/MobileUI.jsx';
 
 const ACTIVE = ['pending', 'accepted', 'arriving', 'in_progress'];
 
 /** Services that are genuinely "pick a ride for this" rather than a page. */
 const RIDES = ['airport', 'corporate', 'wedding', 'shuttle'];
-const PAGES = [
-  { to: '/fleet', label: 'Fleet' },
-  { to: '/services', label: 'Services' },
-  { to: '/contact', label: 'Contact' },
-];
-
 const greet = () => {
   const h = new Date().getHours();
   if (h < 12) return 'Good morning';
@@ -245,9 +238,9 @@ export default function MobileHome() {
               <Link
                 key={slug}
                 to="/reservations"
-                className="flex flex-col items-center gap-2 rounded-[var(--m-radius-inner)] bg-surface px-[var(--m-tile-pad-x)] py-[var(--m-tile-pad-y)] text-center shadow-[var(--m-shadow-card)] active:bg-accent-50"
+                className="flex flex-col items-center gap-2 rounded-[var(--m-radius-inner)] bg-surface px-[var(--m-tile-pad-x)] py-4 text-center shadow-[var(--m-shadow-card)] active:bg-accent-50"
               >
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-[var(--m-icon-bg)] text-[var(--m-icon-fg)]">
+                <span className="grid h-11 w-11 place-items-center rounded-full bg-[var(--m-icon-bg)] text-[var(--m-icon-fg)]">
                   <Icon className="h-5 w-5" />
                 </span>
                 <span className="line-clamp-2 text-[11px] font-bold leading-tight text-ink">
@@ -267,24 +260,6 @@ export default function MobileHome() {
           <LogIn className="h-4 w-4" />
           Sign in to book and track rides
         </Link>
-      )}
-
-      <nav className="mt-5 flex items-center justify-center gap-6">
-        {PAGES.map((p) => (
-          <Link
-            key={p.to}
-            to={p.to}
-            className="text-[13px] font-semibold text-muted active:text-brand-700"
-          >
-            {p.label}
-          </Link>
-        ))}
-      </nav>
-
-      {user?.driverDetails?.vehicleType && (
-        <p className="mt-4 text-center text-xs text-muted">
-          Your vehicle: {vehicleLabel(user.driverDetails.vehicleType)}
-        </p>
       )}
     </div>
   );
