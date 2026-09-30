@@ -27,19 +27,6 @@ const PAGES = [
   { to: '/contact', label: 'Contact' },
 ];
 
-/** Field row height for the pickup/drop-off pair. A field carries a small-caps
-    label plus a value, so it is taller than its 40px dot. */
-const BAND = 60;
-
-/** The dot sits in a shorter band than its field, and the rail takes up the
-    remainder. 50 + rail + 50 must equal 60 + 10 + 60, so the rail is exactly
-    the space between the two dots instead of floating in the middle of a gap
-    twice its length. */
-const DOT_BAND = 50;
-
-/** Reassurance: the two things a rider worries about before trusting a ride app. */
-const ASSURANCES = ['Licensed & insured', 'Cash accepted', 'Available 24/7'];
-
 const greet = () => {
   const h = new Date().getHours();
   if (h < 12) return 'Good morning';
@@ -47,9 +34,22 @@ const greet = () => {
   return 'Good evening';
 };
 
-// Phones only. The whole screen is built around ONE idea: get a ride. Everything
-// else is deliberately quiet — the brand blue is reserved for the live-ride alert
-// and the single booking button, so "blue" keeps meaning "act here".
+/** Field height. A field carries a label plus a value, so it is taller than the
+    44px dot that sits beside it. */
+const FIELD = 64;
+const GAP = 12;
+/** The dot's band. The two bands are deliberately SHORTER than the field column
+    (48 x 2 = 96 against 64 x 2 + 12 = 140), and the rail takes the remaining
+    44px. Sizing them equal left the rail with nothing and it collapsed to 0. */
+const DOT_BAND = 48;
+
+const ASSURANCES = ['Licensed & insured', 'Cash accepted', '24/7'];
+
+// Phones only.
+//
+// The page has one job, so it is built as one hero and everything else is
+// deliberately quiet. The booking card is the only elevated surface, the only
+// vivid control, and the only thing above the fold that asks for anything.
 export default function MobileHome() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -71,8 +71,8 @@ export default function MobileHome() {
 
   const activeRide = useMemo(() => rides.find((r) => ACTIVE.includes(r.status)), [rides]);
 
-  // Recent places come from the passenger's own history, so they are real
-  // addresses they have actually used — not invented suggestions.
+  // Recent places come from this passenger's own history, so they are addresses
+  // they have actually used rather than invented suggestions.
   const recents = useMemo(() => {
     const seen = new Set();
     const out = [];
@@ -81,7 +81,7 @@ export default function MobileHome() {
       const a = r.pickup?.address;
       if (!a || seen.has(a)) continue;
       seen.add(a);
-      out.push({ address: a, lat: r.pickup?.lat, lng: r.pickup?.lng });
+      out.push(a);
       if (out.length === 6) break;
     }
     return out;
@@ -90,206 +90,197 @@ export default function MobileHome() {
   const quickServices = RIDES.filter((slug) => SERVICES.some((s) => s.slug === slug));
 
   return (
-    <div className="px-[var(--m-gutter)] pt-4">
-      {/* Greeting — quiet by design; it is not the headline of the screen. */}
-      <header className="mb-3 flex items-baseline justify-between gap-3">
-        <h1 className="text-[19px] font-bold leading-tight text-ink">
+    <div className="px-[var(--m-gutter)] pb-2 pt-4">
+      {/* ---- Greeting: context, not a headline. It stays out of the hero's way. */}
+      <header className="mb-4 flex items-baseline justify-between gap-3">
+        <p className="text-[15px] font-semibold text-muted">
           {greet()}
-          {user ? `, ${user.name.split(' ')[0]}` : ''}
-        </h1>
+          {user && <span className="text-ink">, {user.name.split(' ')[0]}</span>}
+        </p>
         {!user && (
-          <button
-            type="button"
-            onClick={() => navigate('/login')}
-            className="text-[13px] font-bold text-brand-700"
-          >
+          <Link to="/login" className="text-[13px] font-bold text-brand-700">
             Sign in
-          </button>
+          </Link>
         )}
       </header>
 
-      <div className="stack">
-        {/* A live ride outranks everything — it is the only other blue surface. */}
-        {activeRide && (
-          <Link
-            to={`/rides/track/${activeRide._id}`}
-            className="block rounded-[var(--m-radius-card)] bg-brand-gradient p-4 text-white shadow-[var(--m-shadow-brand)] transition-transform active:scale-[0.99]"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <StatusPill tone="gold" pulse={activeRide.status !== 'pending'}>
-                {activeRide.status === 'pending' ? 'Finding a driver' : 'Ride in progress'}
-              </StatusPill>
-              <ArrowRight className="h-4 w-4 shrink-0 text-gold-300" />
-            </div>
-            <p className="mt-2.5 line-clamp-1 text-sm font-bold">{activeRide.pickup?.address}</p>
-            <p className="mt-0.5 text-xs text-white/70">Tap to track your driver</p>
-          </Link>
-        )}
-
-        {/* ---- The one primary action on the screen ----------------------------
-
-            Built as a real "Where to?" entry rather than two grey placeholders:
-            each row carries a small-caps label, a value line and its own
-            affordance, so it reads as something you interact with here. The
-            route rail is a flex child between the two dots, so it is always
-            exactly the gap between them and shares their centre line — an
-            earlier absolutely-positioned version with hardcoded offsets
-            floated 22px inside the pickup row and never reached the second dot.
-
-            Row height is pinned to BAND so the two columns are guaranteed to be
-            the same height and the rail cannot drift at any text size. */}
-        <Card className="overflow-hidden p-0">
-          <div className="flex gap-3 p-[var(--m-card-pad)]">
-            <span aria-hidden="true" className="flex w-10 shrink-0 flex-col items-center">
-              <span className="flex items-center" style={{ height: DOT_BAND }}>
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-success-50 text-success-700">
-                  <MapPin className="h-[18px] w-[18px]" />
-                </span>
-              </span>
-              {/* The rail sits BETWEEN the dots, so it is simply whatever flex
-                  space is left over. No margin: `my-*` would be taken out of
-                  that space and collapse the rail to a 2px hairline. */}
-              <span className="w-0 flex-1 border-l-2 border-dashed border-accent-300" />
-              <span className="flex items-center" style={{ height: DOT_BAND }}>
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-50 text-brand-700">
-                  <Flag className="h-[18px] w-[18px]" />
-                </span>
-              </span>
-            </span>
-
-            <span className="flex flex-1 flex-col gap-2.5">
-              {[
-                { label: 'Pickup', hint: 'Where are you now?', icon: 'pickup' },
-                { label: 'Drop off', hint: 'Where to?', icon: 'dropoff' },
-              ].map((f) => (
-                <span
-                  key={f.label}
-                  className="flex items-center justify-between gap-2 rounded-[var(--m-radius-inner)] bg-accent-50 px-3.5"
-                  style={{ height: BAND }}
-                >
-                  <span className="min-w-0">
-                    <span className="block text-[10px] font-bold uppercase tracking-[0.08em] text-muted">
-                      {f.label}
-                    </span>
-                    <span className="mt-0.5 block truncate text-[15px] font-semibold text-ink">
-                      {f.hint}
-                    </span>
-                  </span>
-                  <ChevronRight className="h-4 w-4 shrink-0 text-accent-400" />
-                </span>
-              ))}
-            </span>
+      {/* ---- A live ride outranks the hero: it is time-sensitive. */}
+      {activeRide && (
+        <Link
+          to={`/rides/track/${activeRide._id}`}
+          className="mb-[var(--m-section)] block rounded-[var(--m-radius-card)] bg-brand-gradient p-4 text-white shadow-[var(--m-shadow-brand)] transition-transform active:scale-[0.99]"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <StatusPill tone="gold" pulse={activeRide.status !== 'pending'}>
+              {activeRide.status === 'pending' ? 'Finding a driver' : 'Ride in progress'}
+            </StatusPill>
+            <ArrowRight className="h-4 w-4 shrink-0 text-gold-300" />
           </div>
+          <p className="mt-2.5 line-clamp-1 text-sm font-bold">{activeRide.pickup?.address}</p>
+          <p className="mt-0.5 text-xs text-white/70">Tap to track your driver</p>
+        </Link>
+      )}
 
-          {/* Full-bleed so the card reads as one object with one action. */}
-          <Link
-            to="/reservations"
-            className="flex w-full items-center justify-center gap-2 bg-brand-gradient py-4 text-[15px] font-bold text-white transition-transform active:scale-[0.99]"
-          >
-            Book a ride
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </Card>
+      {/* ================= THE HERO =================
+          The only elevated surface on the screen and the only vivid control.
+          Three bands — heading, the two location fields, the button — with a
+          quiet reassurance strip inside the card so it never floats loose. */}
+      <Card className="overflow-hidden p-0 shadow-[var(--m-shadow-hero)]">
+        <div className="px-[var(--m-card-pad)] pb-3.5 pt-4">
+          <h1 className="text-[19px] font-bold leading-tight text-ink">Where to?</h1>
+        </div>
 
-        {/* Answers the two questions a rider has before trusting an app: will
-            this actually happen, and can I pay the way I want to. */}
-        <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] font-medium text-muted">
+        <div className="flex gap-3 px-[var(--m-card-pad)] pb-3.5">
+          {/* The route rail is a flex child between the dots, so it is always
+              exactly the gap and shares their centre line. `items-center` is
+              load-bearing: without it the zero-width rail's border renders at
+              the column edge instead of under the dots. */}
+          <span aria-hidden="true" className="flex w-11 shrink-0 flex-col items-center">
+            <span className="flex items-center" style={{ height: DOT_BAND }}>
+              <span className="grid h-11 w-11 place-items-center rounded-full bg-success-50 text-success-700">
+                <MapPin className="h-5 w-5" />
+              </span>
+            </span>
+            <span className="w-0 flex-1 border-l-2 border-dashed border-accent-300" />
+            <span className="flex items-center" style={{ height: DOT_BAND }}>
+              <span className="grid h-11 w-11 place-items-center rounded-full bg-brand-50 text-brand-700">
+                <Flag className="h-5 w-5" />
+              </span>
+            </span>
+          </span>
+
+          <span className="flex flex-1 flex-col" style={{ gap: GAP }}>
+            {[
+              { label: 'Pickup', hint: 'Where are you now?' },
+              { label: 'Drop off', hint: 'Where to?' },
+            ].map((f) => (
+              <span
+                key={f.label}
+                className="flex items-center justify-between gap-2 rounded-[var(--m-radius-inner)] bg-accent-50 px-4"
+                style={{ height: FIELD }}
+              >
+                <span className="min-w-0">
+                  <span className="block text-[10px] font-bold uppercase tracking-[0.08em] text-muted">
+                    {f.label}
+                  </span>
+                  <span className="mt-0.5 block truncate text-[15px] font-semibold text-ink">
+                    {f.hint}
+                  </span>
+                </span>
+                <ChevronRight className="h-4 w-4 shrink-0 text-accent-400" />
+              </span>
+            ))}
+          </span>
+        </div>
+
+        {/* btn-brand-gradient, not bg-brand-gradient. The band gradient runs
+            #084274 -> #04203a, which is nearly black: as a 381px-wide button it
+            reads as a heavy slab and stops inviting a tap. The system's button
+            gradient runs #0b6ba8 -> #08487e and carries the brand shadow. */}
+        <Link
+          to="/reservations"
+          className="btn-brand-gradient flex w-full items-center justify-center gap-2 py-[1.15rem] text-base font-bold text-white transition-transform active:scale-[0.99]"
+        >
+          Book a ride
+          <ArrowRight className="h-5 w-5" />
+        </Link>
+
+        <div className="safe-bottom flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-accent-50 px-4 py-3">
           {ASSURANCES.map((a, i) => (
-            <span key={a} className="flex items-center gap-1">
+            <span key={a} className="flex items-center gap-1 text-[11px] font-semibold text-muted">
               {i > 0 && <span className="text-accent-300">·</span>}
-              <ShieldCheck className="h-3 w-3 text-success-600" />
+              <ShieldCheck className="h-3.5 w-3.5 text-success-600" />
               {a}
             </span>
           ))}
-        </p>
+        </div>
+      </Card>
 
-        {/* Real places from this passenger's own history. */}
-        {recents.length > 0 && (
-          <section className="pt-1">
-            <SectionBar
-              action={
-                <span className="flex items-center gap-1 text-[11px] font-semibold text-muted">
-                  <History className="h-3 w-3" />
-                  Recent · sets pickup
+      {/* ---- Everything below is quiet by contract: flat surfaces, smaller type,
+              and never a second vivid control competing with the hero. ---- */}
+
+      {recents.length > 0 && (
+        <section className="mt-[var(--m-section)]">
+          <SectionBar
+            action={
+              <span className="flex items-center gap-1 text-[11px] font-semibold text-muted">
+                <History className="h-3 w-3" />
+                sets pickup
+              </span>
+            }
+          >
+            Recent
+          </SectionBar>
+          <div className="scroll-x mt-2.5 -mx-[var(--m-gutter)] px-[var(--m-gutter)]">
+            {recents.map((address) => (
+              <button
+                key={address}
+                type="button"
+                onClick={() => navigate('/reservations')}
+                className="flex w-52 items-center gap-2.5 rounded-full bg-surface py-2 pl-2.5 pr-4 text-left shadow-[var(--m-shadow-card)] active:bg-accent-50"
+              >
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent-100 text-ink">
+                  <Clock className="h-3.5 w-3.5" />
                 </span>
-              }
-            >
-              Where to again
-            </SectionBar>
-            <div className="scroll-x mt-2 -mx-[var(--m-gutter)] px-[var(--m-gutter)]">
-              {recents.map((r) => (
-                <button
-                  key={r.address}
-                  type="button"
-                  onClick={() => navigate('/reservations')}
-                  className="flex w-48 items-center gap-2 rounded-full bg-surface py-2 pl-2.5 pr-4 text-left shadow-[var(--m-shadow-card)] active:bg-accent-50"
-                >
-                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent-100 text-ink">
-                    <Clock className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="truncate text-[13px] font-semibold text-ink">{r.address}</span>
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Services: a compact icon rail, not tall cards competing for attention. */}
-        <section className="pt-1">
-          <SectionBar>Popular services</SectionBar>
-          <div className="mt-2 grid grid-cols-4 gap-2">
-            {quickServices.map((slug) => {
-              const s = SERVICES.find((x) => x.slug === slug);
-              if (!s) return null;
-              const Icon = s.icon || Plane;
-              return (
-                <Link
-                  key={slug}
-                  to="/reservations"
-                  className="flex flex-col items-center gap-1.5 rounded-[var(--m-radius-inner)] bg-surface px-1 py-3 text-center shadow-[var(--m-shadow-card)] active:bg-accent-50"
-                >
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-50 text-brand-700">
-                    <Icon className="h-[18px] w-[18px]" />
-                  </span>
-                  <span className="line-clamp-2 text-[11px] font-bold leading-tight text-ink">
-                    {s.short || s.name}
-                  </span>
-                </Link>
-              );
-            })}
+                <span className="truncate text-[13px] font-semibold text-ink">{address}</span>
+              </button>
+            ))}
           </div>
         </section>
+      )}
 
-        {!user && (
-          <button
-            type="button"
-            onClick={() => navigate('/login')}
-            className="flex items-center justify-center gap-2 rounded-full bg-surface py-3.5 text-sm font-bold text-brand-700 shadow-[var(--m-shadow-card)] active:bg-accent-50"
+      <section className="mt-[var(--m-section)]">
+        <SectionBar>Services</SectionBar>
+        <div className="mt-2.5 grid grid-cols-4 gap-2">
+          {quickServices.map((slug) => {
+            const s = SERVICES.find((x) => x.slug === slug);
+            if (!s) return null;
+            const Icon = s.icon || Plane;
+            return (
+              <Link
+                key={slug}
+                to="/reservations"
+                className="flex flex-col items-center gap-2 rounded-[var(--m-radius-inner)] bg-surface px-1 py-3 text-center shadow-[var(--m-shadow-card)] active:bg-accent-50"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-50 text-brand-700">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <span className="line-clamp-2 text-[11px] font-bold leading-tight text-ink">
+                  {s.short || s.name}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {!user && (
+        <Link
+          to="/login"
+          className="mt-[var(--m-section)] flex items-center justify-center gap-2 rounded-[var(--m-radius-card)] bg-surface py-4 text-sm font-bold text-brand-700 shadow-[var(--m-shadow-card)] active:bg-accent-50"
+        >
+          <LogIn className="h-4 w-4" />
+          Sign in to book and track rides
+        </Link>
+      )}
+
+      <nav className="mt-5 flex items-center justify-center gap-6">
+        {PAGES.map((p) => (
+          <Link
+            key={p.to}
+            to={p.to}
+            className="text-[13px] font-semibold text-muted active:text-brand-700"
           >
-            <LogIn className="h-4 w-4" />
-            Sign in to book and track rides
-          </button>
-        )}
+            {p.label}
+          </Link>
+        ))}
+      </nav>
 
-        {/* Secondary navigation stays text-only: it is not a peer of "Book". */}
-        <nav className="flex items-center justify-center gap-5 pt-1">
-          {PAGES.map((p) => (
-            <Link
-              key={p.to}
-              to={p.to}
-              className="text-[13px] font-semibold text-muted active:text-brand-700"
-            >
-              {p.label}
-            </Link>
-          ))}
-        </nav>
-
-        {user?.driverDetails?.vehicleType && (
-          <p className="pt-1 text-center text-xs text-muted">
-            Your vehicle: {vehicleLabel(user.driverDetails.vehicleType)}
-          </p>
-        )}
-      </div>
+      {user?.driverDetails?.vehicleType && (
+        <p className="mt-4 text-center text-xs text-muted">
+          Your vehicle: {vehicleLabel(user.driverDetails.vehicleType)}
+        </p>
+      )}
     </div>
   );
 }

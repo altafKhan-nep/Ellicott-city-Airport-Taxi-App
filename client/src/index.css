@@ -236,6 +236,10 @@ h2 {
   --m-shadow-card: 0 1px 2px rgb(26 29 33 / 0.04), 0 8px 24px -16px rgb(26 29 33 / 0.18);
   --m-shadow-float: 0 2px 6px rgb(26 29 33 / 0.08), 0 18px 40px -20px rgb(26 29 33 / 0.28);
   --m-shadow-brand: 0 2px 6px rgb(4 32 58 / 0.18), 0 16px 36px -18px rgb(8 66 116 / 0.55);
+  /* The hero card sits above everything else on the screen. */
+  --m-shadow-hero: 0 2px 4px rgb(26 29 33 / 0.05), 0 18px 40px -16px rgb(11 48 80 / 0.28);
+  /* One rhythm for the homepage column. */
+  --m-section: 1.5rem;
 }
 
 /* Vertical rhythm for the scrolling column. */
