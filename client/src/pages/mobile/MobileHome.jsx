@@ -14,12 +14,18 @@ import {
 import { useAuth } from '../../context/AuthContext.jsx';
 import { listRides } from '../../services/rideService.js';
 import { SERVICES } from '../../data/services.js';
+import { vehicleLabel } from '../../data/vehicles.js';
 import { Card, SectionBar, StatusPill } from '../../components/mobile/MobileUI.jsx';
 
 const ACTIVE = ['pending', 'accepted', 'arriving', 'in_progress'];
 
 /** Services that are genuinely "pick a ride for this" rather than a page. */
 const RIDES = ['airport', 'corporate', 'wedding', 'shuttle'];
+const PAGES = [
+  { to: '/fleet', label: 'Fleet' },
+  { to: '/services', label: 'Services' },
+  { to: '/contact', label: 'Contact' },
+];
 const greet = () => {
   const h = new Date().getHours();
   if (h < 12) return 'Good morning';
@@ -260,6 +266,24 @@ export default function MobileHome() {
           <LogIn className="h-4 w-4" />
           Sign in to book and track rides
         </Link>
+      )}
+
+      <nav className="mt-[var(--m-section)] flex items-center justify-center gap-6">
+        {PAGES.map((p) => (
+          <Link
+            key={p.to}
+            to={p.to}
+            className="text-[13px] font-semibold text-muted active:text-brand-700"
+          >
+            {p.label}
+          </Link>
+        ))}
+      </nav>
+
+      {user?.driverDetails?.vehicleType && (
+        <p className="mt-4 text-center text-xs text-muted">
+          Your vehicle: {vehicleLabel(user.driverDetails.vehicleType)}
+        </p>
       )}
     </div>
   );
