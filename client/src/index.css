@@ -228,6 +228,13 @@ h2 {
   --m-gap: 0.75rem;
   --m-gap-section: 1.25rem;
   --m-card-pad: 1rem;
+  /* A third padding step, so tiles stop shipping ad-hoc values like 12px 4px. */
+  --m-tile-pad-y: 0.75rem;
+  --m-tile-pad-x: 0.5rem;
+  /* The one icon treatment: a brand tint with brand text. The pickup dot is the
+     only exception, because green there is semantic, not decorative. */
+  --m-icon-bg: var(--color-brand-50);
+  --m-icon-fg: var(--color-brand-700);
 
   --m-radius-card: 1.25rem;
   --m-radius-inner: 0.875rem;

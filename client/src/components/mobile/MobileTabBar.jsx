@@ -3,8 +3,12 @@ import { NavLink } from 'react-router-dom';
 import { Home, ReceiptText, User, Car } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 
+// The active tab's pill tints blue and its label turns brand-700; the icon has
+// to follow the label or the two halves of one tab disagree.
 const ico = (on) =>
-  `h-[22px] w-[22px] transition-transform duration-200 ${on ? 'scale-110' : ''}`;
+  `h-[22px] w-[22px] transition-transform duration-200 ${
+    on ? 'scale-110 text-brand-700' : 'text-muted'
+  }`;
 
 function Tab({ to, label, children }) {
   return (
@@ -13,7 +17,7 @@ function Tab({ to, label, children }) {
         <>
           <span
             className={`grid h-7 w-12 place-items-center rounded-full transition-colors duration-200 ${
-              isActive ? 'bg-brand-50' : ''
+              isActive ? 'bg-[var(--m-icon-bg)]' : ''
             }`}
           >
             {children(isActive)}

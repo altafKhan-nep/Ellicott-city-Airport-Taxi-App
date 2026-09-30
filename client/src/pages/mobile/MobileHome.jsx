@@ -125,12 +125,12 @@ export default function MobileHome() {
           The only elevated surface on the screen and the only vivid control.
           Three bands — heading, the two location fields, the button — with a
           quiet reassurance strip inside the card so it never floats loose. */}
-      <Card className="overflow-hidden p-0 shadow-[var(--m-shadow-hero)]">
-        <div className="px-[var(--m-card-pad)] pb-3.5 pt-4">
+      <Card className="p-0 shadow-[var(--m-shadow-hero)]">
+        <div className="px-[var(--m-card-pad)] pb-3 pt-4">
           <h1 className="text-[19px] font-bold leading-tight text-ink">Where to?</h1>
         </div>
 
-        <div className="flex gap-3 px-[var(--m-card-pad)] pb-3.5">
+        <div className="flex gap-3 px-[var(--m-card-pad)] pb-4">
           {/* The route rail is a flex child between the dots, so it is always
               exactly the gap and shares their centre line. `items-center` is
               load-bearing: without it the zero-width rail's border renders at
@@ -173,19 +173,24 @@ export default function MobileHome() {
           </span>
         </div>
 
-        {/* btn-brand-gradient, not bg-brand-gradient. The band gradient runs
-            #084274 -> #04203a, which is nearly black: as a 381px-wide button it
-            reads as a heavy slab and stops inviting a tap. The system's button
-            gradient runs #0b6ba8 -> #08487e and carries the brand shadow. */}
-        <Link
-          to="/reservations"
-          className="btn-brand-gradient flex w-full items-center justify-center gap-2 py-[1.15rem] text-base font-bold text-white transition-transform active:scale-[0.99]"
-        >
-          Book a ride
-          <ArrowRight className="h-5 w-5" />
-        </Link>
+        {/* btn-brand-gradient, not bg-brand-gradient: the band gradient runs
+            #084274 -> #04203a, nearly black, and reads as a heavy slab.
 
-        <div className="safe-bottom flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-accent-50 px-4 py-3">
+            It is a pill inset into the card, not a full-bleed bar. Full-bleed
+            gave it border-radius 0px, so it read as part of the card's
+            furniture rather than a button you can press. */}
+        <div className="px-[var(--m-card-pad)]">
+          <Link
+            to="/reservations"
+            className="btn-brand-gradient flex w-full items-center justify-center gap-2 rounded-full py-[1.05rem] text-base font-bold text-white transition-transform active:scale-[0.98]"
+          >
+            Book a ride
+            <ArrowRight className="h-5 w-5" />
+          </Link>
+        </div>
+
+        {/* Reassurance is part of the offer, on the card's own surface. */}
+        <div className="safe-bottom flex flex-wrap items-center justify-center gap-x-3 gap-y-1 px-[var(--m-card-pad)] pb-[var(--m-card-pad)] pt-3.5">
           {ASSURANCES.map((a, i) => (
             <span key={a} className="flex items-center gap-1 text-[11px] font-semibold text-muted">
               {i > 0 && <span className="text-accent-300">·</span>}
@@ -217,9 +222,9 @@ export default function MobileHome() {
                 key={address}
                 type="button"
                 onClick={() => navigate('/reservations')}
-                className="flex w-52 items-center gap-2.5 rounded-full bg-surface py-2 pl-2.5 pr-4 text-left shadow-[var(--m-shadow-card)] active:bg-accent-50"
+                className="flex w-52 items-center gap-2.5 rounded-full bg-surface py-2 pl-2 pr-3.5 text-left shadow-[var(--m-shadow-card)] active:bg-accent-50"
               >
-                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent-100 text-ink">
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[var(--m-icon-bg)] text-[var(--m-icon-fg)]">
                   <Clock className="h-3.5 w-3.5" />
                 </span>
                 <span className="truncate text-[13px] font-semibold text-ink">{address}</span>
@@ -240,9 +245,9 @@ export default function MobileHome() {
               <Link
                 key={slug}
                 to="/reservations"
-                className="flex flex-col items-center gap-2 rounded-[var(--m-radius-inner)] bg-surface px-1 py-3 text-center shadow-[var(--m-shadow-card)] active:bg-accent-50"
+                className="flex flex-col items-center gap-2 rounded-[var(--m-radius-inner)] bg-surface px-[var(--m-tile-pad-x)] py-[var(--m-tile-pad-y)] text-center shadow-[var(--m-shadow-card)] active:bg-accent-50"
               >
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-50 text-brand-700">
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-[var(--m-icon-bg)] text-[var(--m-icon-fg)]">
                   <Icon className="h-5 w-5" />
                 </span>
                 <span className="line-clamp-2 text-[11px] font-bold leading-tight text-ink">
