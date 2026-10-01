@@ -31,6 +31,7 @@ import MobileTrips from './pages/mobile/MobileTrips.jsx';
 import MobileProfile from './pages/mobile/MobileProfile.jsx';
 import MobileDriverProfile from './pages/mobile/MobileDriverProfile.jsx';
 import MobileDriverOnboarding from './pages/mobile/MobileDriverOnboarding.jsx';
+import MobileDriverReview from './pages/mobile/MobileDriverReview.jsx';
 import MobileTrack from './pages/mobile/MobileTrack.jsx';
 
 const RequireRole = ({ role, children }) => {
@@ -119,6 +120,15 @@ export default function App() {
             element={
               <RequireRole role="driver">
                 {shell(<MobileDriverOnboarding />)}
+              </RequireRole>
+            }
+          />
+
+          <Route
+            path="/admin/review"
+            element={
+              <RequireRole role="admin">
+                {shell(<MobileDriverReview />)}
               </RequireRole>
             }
           />

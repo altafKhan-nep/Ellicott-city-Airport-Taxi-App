@@ -293,6 +293,30 @@ export default function MobileProfile() {
         </Card>
       </section>
 
+      {/* Admin tools — only for the master account */}
+      {user.role === 'admin' && (
+        <section className="mt-[var(--m-section)]">
+          <h2 className="t-label mb-2 px-[var(--m-gutter)]">Admin</h2>
+          <Card className="divide-y divide-accent-100">
+            <Link
+              to="/admin/review"
+              className="flex w-full items-center gap-3 px-[var(--m-card-pad)] py-3.5 active:bg-accent-50"
+            >
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold-50 text-gold-700">
+                <ShieldCheck className="h-4 w-4" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-semibold text-ink">Review drivers</span>
+                <span className="mt-0.5 block text-xs text-muted">
+                  Approve or reject driver applications
+                </span>
+              </span>
+              <ChevronRight className="h-4 w-4 shrink-0 text-accent-300" />
+            </Link>
+          </Card>
+        </section>
+      )}
+
       <button
         type="button"
         onClick={doSignOut}

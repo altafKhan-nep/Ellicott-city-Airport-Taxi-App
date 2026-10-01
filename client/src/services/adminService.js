@@ -11,4 +11,9 @@ export const adminUpdateSettings = (payload) => api.patch('/admin/settings', pay
 export const adminAssignDriver = (rideId, driverId) =>
   api.patch(`/admin/rides/${rideId}/driver`, { driverId });
 
-export default { adminUsers, adminSuspendUser, adminUnsuspendUser, adminDeleteUser, adminPayments, adminSettings, adminUpdateSettings, adminAssignDriver };
+// Driver verification queue
+export const adminDrivers = (params) => api.get('/admin/drivers', { params });
+export const adminVerifyDriver = (id, payload) =>
+  api.post(`/admin/drivers/${id}/verify`, payload);
+
+export default { adminUsers, adminSuspendUser, adminUnsuspendUser, adminDeleteUser, adminPayments, adminSettings, adminUpdateSettings, adminAssignDriver, adminDrivers, adminVerifyDriver };
