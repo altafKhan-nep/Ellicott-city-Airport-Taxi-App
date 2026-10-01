@@ -29,6 +29,8 @@ import MobileHome from './pages/mobile/MobileHome.jsx';
 import MobileBook from './pages/mobile/MobileBook.jsx';
 import MobileTrips from './pages/mobile/MobileTrips.jsx';
 import MobileProfile from './pages/mobile/MobileProfile.jsx';
+import MobileDriverProfile from './pages/mobile/MobileDriverProfile.jsx';
+import MobileDriverOnboarding from './pages/mobile/MobileDriverOnboarding.jsx';
 import MobileTrack from './pages/mobile/MobileTrack.jsx';
 
 const RequireRole = ({ role, children }) => {
@@ -43,6 +45,15 @@ const RequireRole = ({ role, children }) => {
   if (!user) return <Navigate to="/login" replace />;
   if (role && user.role !== role) return <Navigate to="/" replace />;
   return children;
+};
+
+// The profile screen depends on the signed-in role, which only useAuth knows —
+// so the branch lives inside the tree, not in the route element.
+const ProfilePage = ({ desktop }) => {
+  const { user } = useAuth();
+  const isPhone = useIsPhone();
+  if (!isPhone) return desktop;
+  return user?.role === 'driver' ? <MobileDriverProfile /> : <MobileProfile />;
 };
 
 export default function App() {
@@ -98,7 +109,16 @@ export default function App() {
             path="/profile"
             element={
               <RequireRole>
-                {shell(page(<MobileProfile />, <Profile />))}
+                {shell(<ProfilePage desktop={<Profile />} />)}
+              </RequireRole>
+            }
+          />
+
+          <Route
+            path="/driver/onboarding"
+            element={
+              <RequireRole role="driver">
+                {shell(<MobileDriverOnboarding />)}
               </RequireRole>
             }
           />

@@ -41,7 +41,11 @@ export default function Register() {
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
-  const goHome = () => navigate(form.role === 'driver' ? '/driver' : '/', { replace: true });
+    // A new driver goes straight to onboarding to submit vehicle + documents.
+    // Sending them to the dashboard first would leave them unable to go online
+    // with no idea why.
+    const goHome = () =>
+      navigate(form.role === 'driver' ? '/driver/onboarding' : '/', { replace: true });
 
   if (done) {
     return (
