@@ -3,6 +3,7 @@ import { UserRound, Clock, Sparkles, Receipt, ShieldCheck, Map, Smartphone, Head
 import { useAuth } from '../../context/AuthContext.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { Reveal } from '../../components/ui/Reveal.jsx';
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from '../../data/site.js';
 
 const WHY_US = [
   {
@@ -75,7 +76,7 @@ export default function About() {
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link to={bookUrl}>
-              <Button size="lg" className="bg-white !text-brand-900 shadow-xl hover:bg-brand-50">
+              <Button size="lg" className="shadow-xl">
                 Secure your ride
               </Button>
             </Link>
@@ -135,11 +136,11 @@ export default function About() {
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <a
-                  href="tel:4103655556"
+                  href={`tel:${CONTACT_PHONE_HREF}`}
                   className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-base font-semibold text-brand-900 shadow-sm transition-colors hover:bg-brand-50"
                 >
                   <Phone className="h-4 w-4" />
-                  (410) 365-5556
+                  {CONTACT_PHONE}
                 </a>
               </div>
             </div>
@@ -192,7 +193,7 @@ export default function About() {
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link to={bookUrl}>
-              <Button size="lg" className="bg-white !text-brand-900 shadow-xl hover:bg-brand-50">
+              <Button size="lg" className="shadow-xl">
                 Book now
               </Button>
             </Link>

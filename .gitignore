@@ -16,3 +16,5 @@ ios/App/App/public
 ios/App/App/config.xml
 *.xcuserdatad
 DerivedData/
+test-results
+playwright-report

@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/Button.jsx';
 import { Reveal } from '../../components/ui/Reveal.jsx';
 import { Timer, Handshake, Sparkles, ShieldCheck, Phone, ArrowRight } from 'lucide-react';
 import { SERVICES } from '../../data/services.js';
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from '../../data/site.js';
 
 const PROMISES = [
   { icon: Timer, title: 'Prompt', desc: 'We value your time. On-time pickup, efficient routing.' },
@@ -39,16 +40,16 @@ export default function Services() {
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link to={bookUrl}>
-              <Button size="lg" className="bg-white !text-brand-900 shadow-xl hover:bg-brand-50">
+              <Button size="lg" className="shadow-xl">
                 Book a ride now
               </Button>
             </Link>
             <a
-              href="tel:4103655556"
+              href={`tel:${CONTACT_PHONE_HREF}`}
               className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-white/10"
             >
               <Phone className="h-4 w-4" />
-              (410) 365-5556
+              {CONTACT_PHONE}
             </a>
           </div>
         </div>
@@ -142,16 +143,16 @@ export default function Services() {
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link to="/contact">
-              <Button size="lg" className="bg-white !text-brand-900 shadow-xl hover:bg-brand-50">
+              <Button size="lg" className="shadow-xl">
                 Get a free quote
               </Button>
             </Link>
             <a
-              href="tel:4103655556"
+              href={`tel:${CONTACT_PHONE_HREF}`}
               className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-white/10"
             >
               <Phone className="h-4 w-4" />
-              (410) 365-5556
+              {CONTACT_PHONE}
             </a>
           </div>
         </div>

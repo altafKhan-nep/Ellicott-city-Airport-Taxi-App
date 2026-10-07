@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, Phone } from 'lucide-react';
 import { SERVICES } from '../../data/services.js';
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from '../../data/site.js';
 
 const inputCls =
   'w-full rounded-xl border border-accent-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-accent-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200';
@@ -74,11 +75,11 @@ export default function Contact() {
                     touch shortly. Prefer to talk now?
                   </p>
                   <a
-                    href="tel:4103655556"
+                    href={`tel:${CONTACT_PHONE_HREF}`}
                     className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-brand-800 shadow-sm hover:bg-brand-50"
                   >
                     <Phone className="h-4 w-4" />
-                    (410) 365-5556
+                    {CONTACT_PHONE}
                   </a>
                 </div>
               ) : (
@@ -132,8 +133,8 @@ export default function Contact() {
           <div className="space-y-5 lg:col-span-2">
             <div className="rounded-3xl border border-accent-200 bg-white p-8 shadow-sm">
               <h3 className="text-base font-bold text-ink">Call or email</h3>
-              <a href="tel:4103655556" className="mt-4 block text-2xl font-extrabold text-brand-900">
-                (410) 365-5556
+              <a href={`tel:${CONTACT_PHONE_HREF}`} className="mt-4 block text-2xl font-extrabold text-brand-900">
+                {CONTACT_PHONE}
               </a>
               <a href="mailto:chriskbonsu@gmail.com" className="mt-1 block text-sm text-brand-700 underline-offset-2 hover:underline">
                 chriskbonsu@gmail.com

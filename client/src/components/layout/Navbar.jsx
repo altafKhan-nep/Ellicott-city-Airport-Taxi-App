@@ -4,6 +4,7 @@ import { Phone, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { SERVICES } from '../../data/services.js';
 import NotificationsBell from './NotificationsBell.jsx';
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from '../../data/site.js';
 
 const MAIN_LINKS = [
   { to: '/about', label: 'About' },
@@ -117,11 +118,11 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           {/* Phone + portal (desktop) */}
           <a
-            href="tel:4103655556"
+            href={`tel:${CONTACT_PHONE_HREF}`}
             className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/10 xl:flex"
           >
             <Phone className="h-4 w-4" />
-            (410) 365-5556
+            {CONTACT_PHONE}
           </a>
 
           <div className="hidden items-center gap-2 lg:flex">
@@ -239,11 +240,11 @@ export default function Navbar() {
               Client Portal
             </button>
             <a
-              href="tel:4103655556"
+              href={`tel:${CONTACT_PHONE_HREF}`}
               className="flex w-full items-center gap-2.5 rounded-2xl px-4 py-3 text-left text-sm font-semibold text-gold-300"
             >
               <Phone className="h-4 w-4" />
-              (410) 365-5556
+              {CONTACT_PHONE}
             </a>
 
             {user && user.role === 'driver' && (

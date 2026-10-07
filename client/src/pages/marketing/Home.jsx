@@ -7,6 +7,7 @@ import { Reveal } from '../../components/ui/Reveal.jsx';
 import { useMediaQuery } from '../../hooks/useMediaQuery.js';
 import { useWebGLSupport } from '../../components/three/useWebGLSupport.js';
 import { SERVICES } from '../../data/services.js';
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from '../../data/site.js';
 
 // The web app sources this list from CatalogContext; the app has no catalog
 // context, so it names the same five services directly.
@@ -105,16 +106,16 @@ export default function Home() {
 
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Link to={bookUrl}>
-                  <Button size="lg" className="bg-white !text-brand-900 shadow-xl hover:bg-brand-50">
+                  <Button size="lg" className="shadow-xl">
                     Book your ride online
                   </Button>
                 </Link>
                 <a
-                  href="tel:4103655556"
+                  href={`tel:${CONTACT_PHONE_HREF}`}
                   className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-white/10"
                 >
                   <Phone className="h-4 w-4" />
-                  (410) 365-5556
+                  {CONTACT_PHONE}
                 </a>
               </div>
 
@@ -236,10 +237,10 @@ export default function Home() {
             <div className="p-8 sm:p-10">
               <h3 className="text-2xl font-bold">Book online or call</h3>
               <a
-                href="tel:4103655556"
+                href={`tel:${CONTACT_PHONE_HREF}`}
                 className="mt-2 block text-3xl font-extrabold tracking-tight text-gold-300"
               >
-                (410) 365-5556
+                {CONTACT_PHONE}
               </a>
               <p className="mt-4 text-[15px] leading-relaxed text-white/80">
                 Get a free, no-obligation quote for airport transfers, events, corporate accounts
@@ -247,7 +248,7 @@ export default function Home() {
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link to={bookUrl}>
-                  <Button size="lg" className="bg-white !text-brand-900 shadow-lg hover:bg-brand-50">
+                  <Button size="lg" className="shadow-lg">
                     Get a free quote
                   </Button>
                 </Link>
@@ -456,11 +457,11 @@ export default function Home() {
               </Button>
             </Link>
             <a
-              href="tel:4103655556"
+              href={`tel:${CONTACT_PHONE_HREF}`}
               className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-base font-semibold text-brand-800 shadow-sm transition-colors hover:bg-brand-50"
             >
               <Phone className="h-4 w-4" />
-              (410) 365-5556
+              {CONTACT_PHONE}
             </a>
           </div>
         </div>

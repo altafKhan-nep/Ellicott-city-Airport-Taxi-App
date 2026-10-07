@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { SERVICES } from '../../data/services.js';
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from '../../data/site.js';
 
 export default function Footer() {
   return (
@@ -16,7 +17,7 @@ export default function Footer() {
           </p>
           <div className="mt-4 flex gap-3">
             <a
-              href="tel:4103655556"
+              href={`tel:${CONTACT_PHONE_HREF}`}
               aria-label="Call us"
               className="grid h-9 w-9 place-items-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
             >
@@ -67,7 +68,7 @@ export default function Footer() {
             </li>
             <li className="flex items-start gap-2">
               <Phone className="mt-0.5 h-4 w-4 shrink-0" />
-              <a href="tel:4103655556" className="transition-colors hover:text-white">(410) 365-5556</a>
+              <a href={`tel:${CONTACT_PHONE_HREF}`} className="transition-colors hover:text-white">{CONTACT_PHONE}</a>
             </li>
             <li className="flex items-start gap-2">
               <Mail className="mt-0.5 h-4 w-4 shrink-0" />

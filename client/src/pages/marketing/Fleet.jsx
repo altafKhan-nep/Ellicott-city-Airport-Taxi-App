@@ -3,6 +3,7 @@ import { Phone, Check } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { Reveal } from '../../components/ui/Reveal.jsx';
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from '../../data/site.js';
 
 const FLEET = [
   {
@@ -97,16 +98,16 @@ export default function Fleet() {
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link to={bookUrl}>
-              <Button size="lg" className="bg-white !text-brand-900 shadow-xl hover:bg-brand-50">
+              <Button size="lg" className="shadow-xl">
                 Book a vehicle now
               </Button>
             </Link>
             <a
-              href="tel:4103655556"
+              href={`tel:${CONTACT_PHONE_HREF}`}
               className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-white/10"
             >
               <Phone className="h-4 w-4" />
-              (410) 365-5556
+              {CONTACT_PHONE}
             </a>
           </div>
         </div>
@@ -148,7 +149,7 @@ export default function Fleet() {
                       <Button className="w-full">Book now</Button>
                     </Link>
                     <a
-                      href="tel:4103655556"
+                      href={`tel:${CONTACT_PHONE_HREF}`}
                       className="grid h-11 w-11 place-items-center rounded-full border border-accent-200 text-brand-700 transition-colors hover:border-brand-300 hover:bg-brand-50"
                       aria-label={`Call about ${v.name}`}
                     >
@@ -171,9 +172,9 @@ export default function Fleet() {
                 motorcoaches.
               </p>
             </div>
-            <a href="tel:4103655556">
-              <Button size="lg" className="bg-white !text-brand-900 shadow-lg hover:bg-brand-50">
-                Call (410) 365-5556
+            <a href={`tel:${CONTACT_PHONE_HREF}`}>
+              <Button size="lg" className="shadow-lg">
+                Call {CONTACT_PHONE}
               </Button>
             </a>
           </div>

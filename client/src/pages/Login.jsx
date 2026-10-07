@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { Input } from '../components/ui/Input.jsx';
 import { Button } from '../components/ui/Button.jsx';
 import SocialLoginButtons from '../components/auth/SocialLoginButtons.jsx';
+import { CONTACT_PHONE } from '../data/site.js';
 
 export default function Login() {
   const { login } = useAuth();
@@ -58,7 +59,7 @@ export default function Login() {
             type="text"
             required
             autoComplete="username"
-            placeholder="you@example.com or (410) 365-5556"
+            placeholder={`you@example.com or ${CONTACT_PHONE}`}
             value={form.identifier}
             onChange={(e) => setForm({ ...form, identifier: e.target.value })}
           />

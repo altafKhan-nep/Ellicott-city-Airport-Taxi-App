@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Phone } from 'lucide-react';
 import NotificationsBell from '../layout/NotificationsBell.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from '../../data/site.js';
 
 // Phones only: a slim brand bar instead of the full desktop Navbar, which is
 // 64px tall and wastes a third of a phone screen.
@@ -24,8 +25,8 @@ export default function MobileAppBar() {
 
         <div className="flex shrink-0 items-center gap-1">
           <a
-            href="tel:4103655556"
-            aria-label="Call (410) 365-5556"
+            href={`tel:${CONTACT_PHONE_HREF}`}
+            aria-label={`Call ${CONTACT_PHONE}`}
             className="grid h-9 w-9 place-items-center rounded-full text-white/90 transition-colors active:bg-white/15"
           >
             <Phone className="h-5 w-5" />

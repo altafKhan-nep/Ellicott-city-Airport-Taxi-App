@@ -15,6 +15,7 @@ import { Camera as CapCamera, CameraResultType, CameraSource } from '@capacitor/
 import { useAuth } from '../../context/AuthContext.jsx';
 import { updateProfile, setAvatar, changePassword } from '../../services/userService.js';
 import { Card, ScreenTitle, PrimaryButton } from '../../components/mobile/MobileUI.jsx';
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from '../../data/site.js';
 
 // Phones only. A native profile screen replacing the old list of links to the
 // desktop /profile page, which rendered the site layout inside the app shell.
@@ -330,8 +331,8 @@ export default function MobileProfile() {
       <p className="mt-5 text-center text-[11px] leading-relaxed text-muted">
         Ellicott City Airport Taxi
         <br />
-        <a href="tel:4103655556" className="t-price font-semibold text-brand-700">
-          (410) 365-5556
+        <a href={`tel:${CONTACT_PHONE_HREF}`} className="t-price font-semibold text-brand-700">
+          {CONTACT_PHONE}
         </a>
       </p>
 
